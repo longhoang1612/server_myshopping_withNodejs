@@ -3,7 +3,10 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var Diacritics = require('diacritic');
-
+var fs = require('fs');
+var array = fs.readFileSync('file.in').toString().split("\n");
+var request = require('request');
+var cheerio = require('cheerio');
 //import model
 var Food = require('./models/food');
 var User = require('./models/user');
@@ -20,10 +23,9 @@ var FunnyEnglish = require('./models/funnyEnglish')
 var NguPhapSoCap = require('./models/NguPhapSoCap')
 var NguPhapTrungCap = require('./models/NguPhapTrungCap')
 var NguPhapCaoCap = require('./models/NguPhapCaoCap')
-
+var PhoneCategory = require('./models/PhoneCategory')
 var arrWord = new Array();
 var arrNghia = new Array();
-
 var app = express();
 mongoose.Promise = global.Promise;
 mongoose.connect('mongodb://hoanglong96:hoanglong96@ds111618.mlab.com:11618/hoanglongdb'
@@ -31,34 +33,135 @@ mongoose.connect('mongodb://hoanglong96:hoanglong96@ds111618.mlab.com:11618/hoan
 
 //Set port 
 app.set('port', (process.env.PORT || 5000));
-
 app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.json());
 
 // views is directory for all template files
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
-
-
 app.listen(app.get('port'), function () {
   console.log('Node app is running on port', app.get('port'));
   //intervalObj
 });
 
-var fs = require('fs');
-var array = fs.readFileSync('file.in').toString().split("\n");
-
-var request = require('request');
-var cheerio = require('cheerio');
-
 // const intervalObj = setInterval(() => {
-
 //   checkCount();
 // }, 1000);
 
 var checkCount = function(){
   console.log("hihi")
 }
+
+app.post('/createProduct',function(req,res){
+  var body = req.body;
+  var idValue = body.idCategory
+  var imageValue = body.imageCategory
+  var listProductValue = body.listProduct
+
+  var category = new PhoneCategory({
+    idCategory: idValue,
+    imageCategory:imageValue,
+    listProduct: listProductValue
+  })
+
+  category.save(function (err, createCategory) {
+    if (err) {
+      res.json({ "success": 0, "message": "Could not add record: " + err });
+    } else {
+      res.json(createCategory);
+    }
+  });
+})
+
+//Create Food
+app.post('/createFood', function (req, res) {
+  var body = req.body;
+
+  // var idValue = body.id;
+  var nameValue = body.name;
+  var authorValue = body.author;
+  var imageShowValue = body.imageShow;
+  var typeValue = body.type;
+  var timeValue = body.time;
+  var setsValue = body.sets;
+  var levelValue = body.level;
+  var ratingValue = body.rating;
+  var rateNumValue = body.rateNum;
+  var materialValue = body.material;
+  var cookValue = body.cook;
+  var listRateValue = body.listRate;
+  var authorNameValue = body.authorName;
+
+  var food = new Food({
+    // id:idValue,
+    name: nameValue,
+    author: authorValue,
+    imageShow: imageShowValue,
+    type: typeValue,
+    time: timeValue,
+    sets: setsValue,
+    level: levelValue,
+    rating: ratingValue,
+    rateNum: rateNumValue,
+    material: materialValue,
+    cook: cookValue,
+    listRate: listRateValue,
+    authorName: authorNameValue
+  });
+
+
+  food.save(function (err, createdFood) {
+    if (err) {
+      res.json({ "success": 0, "message": "Could not add record: " + err });
+    } else {
+      res.json(createdFood);
+    }
+  });
+});
+
+// var timer = setInterval(function() {
+//   return Crawler();
+// }, 5000);
+
+//Create Category Phone
+app.post('/createCategory',function(req,res){
+  request('https://www.thegioididong.com/dtdd', function (err, res1, body) 
+    {
+      if(err){
+        console.log('error')
+      }else{
+        $ = cheerio.load(body)
+        var ds = $(body).find('.manuwrap .manunew a img');
+        ds.each(function(i,e){
+          var phoneCategory = new PhoneCategory({
+            image: 'https:'+$(this).attr('src')
+          });
+        
+          phoneCategory.save(function (err, createdPhoneCategory) {
+            if (err) {
+              res.json({ "success": 0, "message": "Could not add record: " + err });
+            } else {
+              console.log(createdPhoneCategory)
+              res.json(createdPhoneCategory);
+            }
+          })
+      })
+    }
+  });
+})
+
+//Get all Category Phone
+app.get('/getAllCategoryPhone', function (req, res) {
+  PhoneCategory.find(function (err, categoryPhones) {
+    if (err) {
+      res.json({ success: 0, message: "Could not get data from mlab" });
+    } else {
+      // res.json(foods);
+      res.send(categoryPhones);
+    }
+  });
+});
+
 
 //crawl funny english
 var urlFunnyEnglish = "http://www.mshoatoeic.com/funny-english-nl37";
