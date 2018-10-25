@@ -73,6 +73,11 @@ app.post('/createProduct',function(req,res){
   });
 })
 
+app.post('/createCategory',function(req,res){
+  var body = req.body;
+  var imageValue = body.imageCategory;
+})
+
 //Create Food
 app.post('/createFood', function (req, res) {
   var body = req.body;
@@ -158,6 +163,46 @@ app.get('/getAllCategoryPhone', function (req, res) {
     } else {
       // res.json(foods);
       res.send(categoryPhones);
+    }
+  });
+});
+
+//Get all funny English
+app.get('/getPhone/:_id', function (req, res) {
+  PhoneCategory.findById({"_id:":req.params._id},function (err, funny) {
+    if (err) {
+      res.json({ success: 0, message: "Could not get data from mlab" });
+    } else {
+      res.send({ PhoneCategory: phoneCategory });
+    }
+  });
+});
+
+app.put('/updateUser/:userId', function (req, res) {
+  // User.findById(req.params.userId, function (err, user) {
+  UserInfo.findOne({ 'idFb': req.params.userId }, function (err, user) {
+    // Handle any possible database errors
+    if (err) {
+      res.status(500).send(err);
+    } else {
+      // Update each attribute with any possible attribute that may have been submitted in the body of the request
+      // If that attribute isn't in the request body, default back to whatever it was before.
+
+      // user.idFb = req.body.idFb || user.idFb;
+      user.avatar = req.body.avatar || user.avatar;
+      user.fullname = req.body.fullname || user.fullname;
+      user.userFollow = req.body.userFollow || user.userFollow;
+      user.listNews = req.body.listNews || user.listNews;
+      user.userFollow = req.body.userFollow || user.userFollow;
+
+      // Save the updated document back to the database
+      user.save(function (err, user) {
+        if (err) {
+          res.status(500).send(err)
+        } else {
+          res.send(user);
+        }
+      });
     }
   });
 });

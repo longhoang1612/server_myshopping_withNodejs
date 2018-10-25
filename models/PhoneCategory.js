@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var phoneCategorySchema = new Schema({
+    idCategory:Number,
     imageCategory: String,
     listProduct: [{
         name: String,
