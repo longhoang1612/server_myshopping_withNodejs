@@ -24,6 +24,7 @@ var NguPhapSoCap = require('./models/NguPhapSoCap')
 var NguPhapTrungCap = require('./models/NguPhapTrungCap')
 var NguPhapCaoCap = require('./models/NguPhapCaoCap')
 var PhoneCategory = require('./models/PhoneCategory')
+var PhoneProduct = require('./models/PhoneProduct')
 var arrWord = new Array();
 var arrNghia = new Array();
 var app = express();
@@ -52,16 +53,141 @@ var checkCount = function(){
   console.log("hihi")
 }
 
-app.post('/createProduct',function(req,res){
+//crawl category
+var urlCategory = "https://www.thegioididong.com/dtdd";
+request(urlCategory,function(err,res,body){
+  if(!err && res.statusCode == 200){
+    $ = cheerio.load(body)
+    var ds = $(body).find('.manuwrap .manunew a img');
+        ds.each(function(i,e){
+          var phoneCategory = new PhoneCategory({
+            image: 'https:'+$(this).attr('src'),
+            href: $(this).find('href')
+          });
+        
+          phoneCategory.save(function (err, createdPhoneCategory) {
+            if (err) {
+              //res.json({ "success": 0, "message": "Could not add record: " + err });
+            } else {
+              console.log(createdPhoneCategory)
+              //res.json(createdPhoneCategory);
+            }
+          });
+    })
+  }
+})
+
+//crawl detail item
+var urlItemDetail = "https://www.thegioididong.com/dtdd/samsung-galaxy-note-9";
+request(urlItemDetail,function(err,res,body){
+  if(!err && res.statusCode == 200){
+    var title;
+    var ratting;
+    var numberRatting;
+    var image;
+    var price;
+    var khuyenmai;
+    var listKhuyenMai = [String]
+    var $ = cheerio.load(body)
+    var ds = $(body).find('.rowtop')
+    ds.each(function(i,e){
+      title = $(this).find('h1').text()
+      ratting = $(this).find('.ratingresult .star').length
+      numberRatting = $(this).find('.ratingresult a').text()
+    })
+
+    var ds1 = $(body).find('.rowdetail')
+    ds1.each(function(i,e){
+      image = $(this).find('.picture img').attr('src')
+      price = $(this).find('.price_sale .area_price').text()
+      khuyenmai = $(this).find('.price_sale .area_promotion .infopr span').each(function(i,e){
+        var km = $(this).text()
+        listKhuyenMai.push(km)
+      })
+    })
+
+    var ds2 = $(body).find('.gamecombo ul')
+    ds2.each(function(i,e){
+        var item = $(this).text()
+        //console.log(item)
+    })
+
+    var ds3 = $(body).find('.box_content .left_content').each(function(i,e){
+      var characteristics = $(this).find('.characteristics h2').text()
+      var item1 = $(this).find('.characteristics #owl-detail .item img').each(function(i,e){
+        var ee = $(this).attr('data-src')
+        console.log(ee)
+      })
+    })
+  }
+})
+
+//CrawlItem
+var urlMobile = "https://www.thegioididong.com/dtdd-motorola";
+request(urlMobile,function(err,response,body){
+  if(!err && response.statusCode == 200){
+    var $ = cheerio.load(body)
+    var ds = $(body).find('.homeproduct li a')
+    //console.log(ds.length)
+    ds.each(function(i,e){
+      var image = $(this).find('img').attr('data-original')
+      if(image===undefined){
+        image = $(this).find('img').attr('src')
+      }
+
+      var linkUrl = $(this).attr('href')
+      //console.log(linkUrl)
+      var title = $(this).find('h3').text()
+      var price = $(this).find('.price').text()
+      var ratting = $(this).find('.ratingresult .icontgdd-ystar').length
+      var numberRating = $(this).find('.ratingresult').text().replace("            ",'').trim();
+      var description = $(this).find('p').text()
+      var deal = $(this).find('label').text()
+      var info = $(this).find('.bginfo').text()
+      
+      var phoneProduct = new PhoneProduct({
+        type:'motorola',
+        name: title,
+        price: price,
+        description: description,
+        deal:deal,
+        image: image,
+        rating : ratting,
+        numberRating: numberRating,
+        info:info
+      });
+    
+      phoneProduct.save(function (err, createPhoneProduct) {
+        if (err) {
+          console.log("error")
+        } else {
+          //console.log("success")
+        }
+      })
+  })
+  }else{
+    console.log('error')
+  }
+})
+
+app.get('/getPhoneProduct',function(req,res){
+  PhoneProduct.find(function (err, phoneProduct) {
+    if (err) {
+      res.json({ success: 0, message: "Could not get data from mlab" });
+    } else {
+      res.send(phoneProduct);
+    }
+  });
+})
+
+app.post('/createCategoryProduct',function(req,res){
   var body = req.body;
-  var idValue = body.idCategory
   var imageValue = body.imageCategory
-  var listProductValue = body.listProduct
+  var type = body.type
 
   var category = new PhoneCategory({
-    idCategory: idValue,
     imageCategory:imageValue,
-    listProduct: listProductValue
+    type: type
   })
 
   category.save(function (err, createCategory) {
@@ -128,33 +254,6 @@ app.post('/createFood', function (req, res) {
 //   return Crawler();
 // }, 5000);
 
-//Create Category Phone
-app.post('/createCategory',function(req,res){
-  request('https://www.thegioididong.com/dtdd', function (err, res1, body) 
-    {
-      if(err){
-        console.log('error')
-      }else{
-        $ = cheerio.load(body)
-        var ds = $(body).find('.manuwrap .manunew a img');
-        ds.each(function(i,e){
-          var phoneCategory = new PhoneCategory({
-            image: 'https:'+$(this).attr('src')
-          });
-        
-          phoneCategory.save(function (err, createdPhoneCategory) {
-            if (err) {
-              res.json({ "success": 0, "message": "Could not add record: " + err });
-            } else {
-              console.log(createdPhoneCategory)
-              res.json(createdPhoneCategory);
-            }
-          })
-      })
-    }
-  });
-})
-
 //Get all Category Phone
 app.get('/getAllCategoryPhone', function (req, res) {
   PhoneCategory.find(function (err, categoryPhones) {
@@ -168,12 +267,12 @@ app.get('/getAllCategoryPhone', function (req, res) {
 });
 
 //Get all funny English
-app.get('/getPhone/:_id', function (req, res) {
-  PhoneCategory.findById({"_id:":req.params._id},function (err, funny) {
+app.get('/getPhone/:idCategory', function (req, res) {
+  PhoneCategory.findOne({"idCategory":req.params.idCategory},function (err, phoneCategory) {
     if (err) {
       res.json({ success: 0, message: "Could not get data from mlab" });
     } else {
-      res.send({ PhoneCategory: phoneCategory });
+      res.send({phoneCategory});
     }
   });
 });
@@ -213,8 +312,6 @@ var urlFunnyEnglish = "http://www.mshoatoeic.com/funny-english-nl37";
 request(urlFunnyEnglish,function(err,response,body){
   if(!err && response.statusCode == 200){
     var $ = cheerio.load(body)
-
-  
       var a = $('.main_content .clearfix .img_news a img').each(function(k,elems){
           var b = $(this).attr('src')
           var titleFunny = $(this).attr('alt')
