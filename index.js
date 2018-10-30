@@ -261,7 +261,7 @@ app.get('/getAllCategoryPhone', function (req, res) {
       res.json({ success: 0, message: "Could not get data from mlab" });
     } else {
       // res.json(foods);
-      res.send(categoryPhones);
+      res.send({Category:categoryPhones});
     }
   });
 });
