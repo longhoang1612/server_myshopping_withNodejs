@@ -54,28 +54,28 @@ var checkCount = function(){
 }
 
 //crawl category
-var urlCategory = "https://www.thegioididong.com/dtdd";
-request(urlCategory,function(err,res,body){
-  if(!err && res.statusCode == 200){
-    $ = cheerio.load(body)
-    var ds = $(body).find('.manuwrap .manunew a img');
-        ds.each(function(i,e){
-          var phoneCategory = new PhoneCategory({
-            image: 'https:'+$(this).attr('src'),
-            href: $(this).find('href')
-          });
+// var urlCategory = "https://www.thegioididong.com/dtdd";
+// request(urlCategory,function(err,res,body){
+//   if(!err && res.statusCode == 200){
+//     $ = cheerio.load(body)
+//     var ds = $(body).find('.manuwrap .manunew a img');
+//         ds.each(function(i,e){
+//           var phoneCategory = new PhoneCategory({
+//             image: 'https:'+$(this).attr('src'),
+//             href: $(this).find('href')
+//           });
         
-          phoneCategory.save(function (err, createdPhoneCategory) {
-            if (err) {
-              //res.json({ "success": 0, "message": "Could not add record: " + err });
-            } else {
-              console.log(createdPhoneCategory)
-              //res.json(createdPhoneCategory);
-            }
-          });
-    })
-  }
-})
+//           phoneCategory.save(function (err, createdPhoneCategory) {
+//             if (err) {
+//               //res.json({ "success": 0, "message": "Could not add record: " + err });
+//             } else {
+//               console.log(createdPhoneCategory)
+//               //res.json(createdPhoneCategory);
+//             }
+//           });
+//     })
+//   }
+// })
 
 //crawl detail item
 var urlItemDetail = "https://www.thegioididong.com/dtdd/samsung-galaxy-note-9";
@@ -122,82 +122,108 @@ request(urlItemDetail,function(err,res,body){
   }
 })
 
-//CrawlItem
-var urlMobile = "https://www.thegioididong.com/dtdd-motorola";
+// //CrawlItem
+var urlMobile = "https://www.thegioididong.com/dtdd";
 request(urlMobile,function(err,response,body){
   if(!err && response.statusCode == 200){
     var $ = cheerio.load(body)
-    var ds = $(body).find('.homeproduct li a')
-    //console.log(ds.length)
-    ds.each(function(i,e){
-      var image = $(this).find('img').attr('data-original')
-      if(image===undefined){
-        image = $(this).find('img').attr('src')
-      }
-
-      var linkUrl = $(this).attr('href')
-      //console.log(linkUrl)
-      var title = $(this).find('h3').text()
-      var price = $(this).find('.price').text()
-      var ratting = $(this).find('.ratingresult .icontgdd-ystar').length
-      var numberRating = $(this).find('.ratingresult').text().replace("            ",'').trim();
-      var description = $(this).find('p').text()
-      var deal = $(this).find('label').text()
-      var info = $(this).find('.bginfo').text()
-      
-      var phoneProduct = new PhoneProduct({
-        type:'motorola',
-        name: title,
-        price: price,
-        description: description,
-        deal:deal,
-        image: image,
-        rating : ratting,
-        numberRating: numberRating,
-        info:info
-      });
-    
-      phoneProduct.save(function (err, createPhoneProduct) {
-        if (err) {
-          console.log("error")
-        } else {
-          //console.log("success")
-        }
-      })
-  })
+    var ds = $(body).find('.owl-item a img').text()
+    console.log(ds)
+  //   ds.each(function(i,e){
+  //     var image = $(this).attr('src')
+  //     console.log("image:" + image)
+  // })
   }else{
     console.log('error')
   }
 })
 
-app.get('/getPhoneProduct',function(req,res){
+// //CrawlItem
+// var urlMobile = "https://www.thegioididong.com/dtdd-motorola";
+// request(urlMobile,function(err,response,body){
+//   if(!err && response.statusCode == 200){
+//     var $ = cheerio.load(body)
+//     var ds = $(body).find('.homeproduct li a')
+//     //console.log(ds.length)
+//     ds.each(function(i,e){
+//       var image = $(this).find('img').attr('data-original')
+//       if(image===undefined){
+//         image = $(this).find('img').attr('src')
+//       }
+
+//       var linkUrl = $(this).attr('href')
+//       //console.log(linkUrl)
+//       var title = $(this).find('h3').text()
+//       var price = $(this).find('.price').text()
+//       var ratting = $(this).find('.ratingresult .icontgdd-ystar').length
+//       var numberRating = $(this).find('.ratingresult').text().replace("            ",'').trim();
+//       var description = $(this).find('p').text()
+//       var deal = $(this).find('label').text()
+//       var info = $(this).find('.bginfo').text()
+      
+//       var phoneProduct = new PhoneProduct({
+//         type:'motorola',
+//         name: title,
+//         price: price,
+//         description: description,
+//         deal:deal,
+//         image: image,
+//         rating : ratting,
+//         numberRating: numberRating,
+//         info:info
+//       });
+    
+//       phoneProduct.save(function (err, createPhoneProduct) {
+//         if (err) {
+//           console.log("error")
+//         } else {
+//           //console.log("success")
+//         }
+//       })
+//   })
+//   }else{
+//     console.log('error')
+//   }
+// })
+
+app.get('/getPhoneProduct/:type',function(req,res){
+  PhoneProduct.find({"type":req.params.type},function (err, phoneProduct) {
+    if (err) {
+      res.json({ success: 0, message: "Could not get data from mlab" });
+    } else {
+      res.send({PhoneProduct:phoneProduct});
+    }
+  });
+})
+
+app.get('/getPhoneProduct/',function(req,res){
   PhoneProduct.find(function (err, phoneProduct) {
     if (err) {
       res.json({ success: 0, message: "Could not get data from mlab" });
     } else {
-      res.send(phoneProduct);
+      res.send({PhoneProduct:phoneProduct});
     }
   });
 })
 
-app.post('/createCategoryProduct',function(req,res){
-  var body = req.body;
-  var imageValue = body.imageCategory
-  var type = body.type
+// app.post('/createCategoryProduct',function(req,res){
+//   var body = req.body;
+//   var imageValue = body.imageCategory
+//   var type = body.type
 
-  var category = new PhoneCategory({
-    imageCategory:imageValue,
-    type: type
-  })
+//   var category = new PhoneCategory({
+//     imageCategory:imageValue,
+//     type: type
+//   })
 
-  category.save(function (err, createCategory) {
-    if (err) {
-      res.json({ "success": 0, "message": "Could not add record: " + err });
-    } else {
-      res.json(createCategory);
-    }
-  });
-})
+//   category.save(function (err, createCategory) {
+//     if (err) {
+//       res.json({ "success": 0, "message": "Could not add record: " + err });
+//     } else {
+//       res.json(createCategory);
+//     }
+//   });
+// })
 
 app.post('/createCategory',function(req,res){
   var body = req.body;
@@ -682,50 +708,6 @@ request(urlSoCap,function(err,response,body){
       })
 
       // soCap.save(function(err,taoSoCap){
-      //   if(err){
-      //     console.log('err')
-      //   }else{
-      //     console.log('success')
-      //   }
-      // })
-  }
-})
-
-//crawl ngữ pháp trình độ trung cấp
-var urlSoCap = 'http://bktoeic.edu.vn/ngu-phap-tieng-anh/ngu-phap-tieng-anh-trinh-do-trung-cap/';
-request(urlSoCap,function(err,response,body){
-  if(!err && response.statusCode == 200){
-    var $ = cheerio.load(body)
-    
-    var arrTrungCapImage = new Array();
-    var arrTrungCapTitle = new Array();
-    var arrTrungCapDesc = new Array();
-
-    var imageTrungCap = $('.posts-listing article a img').each(function(i,elem){
-      var image = $(this).attr('src')
-      arrTrungCapImage.push(image)
-    })
-
-    var titleTrungCap = $('.posts-listing article h1').each(function(i,elem){
-      var title = $(this).text()
-      arrTrungCapTitle.push(title)
-    })
-
-    var descTrungCap = $('.posts-listing article p').each(function(i,elem){
-      var desc = $(this).text()
-      arrTrungCapDesc.push(desc)
-    })
-  }
-
-  for(var i=0;i<titleTrungCap.length;i++){
-      var trungCap= new NguPhapTrungCap({
-          idTrungCap: i+1,
-          title:arrTrungCapTitle[i],
-          image:arrTrungCapImage[i],
-          desc:arrTrungCapDesc[i]
-      })
-
-      // trungCap.save(function(err,taoTrungCap){
       //   if(err){
       //     console.log('err')
       //   }else{
