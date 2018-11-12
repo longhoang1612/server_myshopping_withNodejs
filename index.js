@@ -182,7 +182,6 @@ app.post('/itemCrawl', function (req, res) {
         characteristics = $(this).find('.characteristics h2').text()
         h2 = $(this).find('.boxArticle .area_article h2').text();
         video = $(this).find('.boxArticle .area_article .video').attr('src');
-        p = $(this).find('.boxArticle .area_article p').text()
         var image = $(this).find('.boxArticle .area_article p').each(function (i, e) {
           var k = $(this).find('.preventdefault').attr('href')
           var k1 = $(this).text()
@@ -212,7 +211,6 @@ app.post('/itemCrawl', function (req, res) {
         titleH2:h2,
         titleContent: characteristics,
         linkVideo: video,
-        topContentP:p,
         detailContent: detailContent
       });
 
@@ -240,6 +238,19 @@ app.get('/getDetailPhoneItem/', function (req, res) {
       });
     }
   });
+})
+
+//Crawl Trang chu
+var urlHome = "https://www.thegioididong.com/"
+request(urlHome,function(err,response,body){
+  if(!err && response.statusCode == 200){
+    var $ = cheerio.load(body)
+    var ds = $(body).find('.homebanner')
+    ds.each(function(i,e){
+      var image = $(this).find('.item a img').attr('src')
+      console.log(image)
+    })
+  }
 })
 
 //CrawlItem
