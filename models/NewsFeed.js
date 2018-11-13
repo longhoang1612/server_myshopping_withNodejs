@@ -36,6 +36,7 @@ var newsfeedSchema = new Schema({
         imagePromo :String,
     }],
     accessories:[{
+        image:String,
         href :String,
         title :String,
         price :String,

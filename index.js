@@ -376,6 +376,7 @@ request(urlHome,function(err,response,body){
         var per = $(this).find('.per').text()
 
         var obj = new Object()
+        obj.image = image
         obj.href = href
         obj.title = title
         obj.price = price
