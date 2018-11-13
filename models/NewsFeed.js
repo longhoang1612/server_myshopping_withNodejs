@@ -10,7 +10,10 @@ var newsfeedSchema = new Schema({
         shockprice :String,
         discount :String,
         installment :String,
-        pre:String
+        pre:String,
+        imagePromo:String,
+        promo:String,
+        newItem:String
     }],
     phone:[{
         href : String,

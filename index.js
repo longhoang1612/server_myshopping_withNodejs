@@ -283,6 +283,12 @@ request(urlHome,function(err,response,body){
       var discount = $(this).find('.discount').text()
       var installment = $(this).find('.installment').text()
       var pre = $(this).find('.per').text()
+      var promoImage = $(this).find('.promo img').attr('data-original')
+      if(promoImage==undefined){
+        promoImage = $(this).find('.promo img').attr('src')
+      }
+      var newItem = $(this).find('.new').text()
+      var promo = $(this).find('.promo p').text()
       //
     
       var obj = new Object()
@@ -294,6 +300,9 @@ request(urlHome,function(err,response,body){
       obj.discount =discount
       obj.installment=installment
       obj.pre=pre
+      obj.promo = promo
+      obj.imagePromo = promoImage
+      obj.newItem = newItem
       
       objKM.push(obj)
     })
