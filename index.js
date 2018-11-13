@@ -21,7 +21,7 @@ mongoose.connect('mongodb://hoanglong96:hoanglong96@ds111618.mlab.com:11618/hoan
 });
 
 //Set port 
-app.set('port', (process.env.PORT || 5000));
+app.set('port', (process.env.PORT || 1612));
 app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.json());
 
@@ -244,11 +244,92 @@ app.get('/getDetailPhoneItem/', function (req, res) {
 var urlHome = "https://www.thegioididong.com/"
 request(urlHome,function(err,response,body){
   if(!err && response.statusCode == 200){
+
+    //Variable Object
+    var slideImage = []
+
     var $ = cheerio.load(body)
-    var ds = $(body).find('.homebanner')
+    
+    //Crawl slide image
+    var ds = $(body).find('.homebanner #sync1 .item')
     ds.each(function(i,e){
-      var image = $(this).find('.item a img').attr('src')
-      console.log(image)
+      var image = $(this).find('a img').attr('src')
+      if(image == undefined){
+        image = $(this).find('a img').attr('data-src')
+      }
+      slideImage.push('https:'+image)
+    })
+
+    //Crawl 13 khuyen mai noi bat
+    var noibat = $(body).find('#owl-promo .item')
+    noibat.each(function(i,e){
+
+      //href
+      var href = $(this).find('a').attr('href')
+
+      //image
+      var imageItem = $(this).find('a img').attr('src')
+      if(imageItem == undefined){
+        imageItem = $(this).find('a img').attr('data-original')
+      }
+      //
+
+      //Title
+      var titleItem = $(this).find('h3').text()
+      //Price
+      var newPrice = $(this).find('.price strong').text()
+
+      //discount
+      var shockprice = $(this).find('.shockprice').text()
+      var discount = $(this).find('.discount').text()
+      var installment = $(this).find('.installment').text()
+      var pre = $(this).find('.per').text()
+      //
+
+    })
+
+    //Crawl dien thoai noi bat
+    var homeproduct = $(body).find('.homeproduct li')
+    homeproduct.each(function(i,e){
+      if(i<=7){
+        var id = $(this).attr('data-id')
+        var href = $(this).find('a').attr('href')
+        var image = $(this).find('img').attr('data-original')
+        var titlePhone = $(this).find('h3').text()
+        var pricePhone = $(this).find('.price strong').text()
+        var shockprice = $(this).find('.shockprice').text()
+        var discount = $(this).find('.discount').text()
+        var installment = $(this).find('.installment').text()
+        var promo = $(this).find('.promo').text()
+        var imagePromo = $(this).find('.promo img').attr('data-original')
+        //console.log('https://www.thegioididong.com/' + href)  
+      }
+    })
+
+    //Crawl laptop noi bat
+    var homeLaptop = $(body).find('.homeproduct li')
+    homeLaptop.each(function(i,e){
+      if(i>7){
+        var id = $(this).attr('data-id')
+        var href = $(this).find('a').attr('href')
+        var imageLaptop = $(this).find('img').attr('data-original')
+        var titleLaptop = $(this).find('h3').text()
+        var priceLaptop = $(this).find('.price strong').text()
+        var installmentLaptop = $(this).find('.installment').text()
+        var promoLaptop = $(this).find('.promo').text()
+        var imagePromoLaptop = $(this).find('.promo img').attr('data-original')
+      }
+    })
+
+    //Crawl phu kien noi bat
+    var homeAccess = $(body).find('.owl-carousel .item')
+    homeAccess.each(function(i,e){
+      if(i>12){
+        var href = $(this).find('a').attr('href')
+        var title = $(this).find('h3').text()
+        var price = $(this).find('.price strong').text()
+        var per = $(this).find('.per').text()
+      }
     })
   }
 })
