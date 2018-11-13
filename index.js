@@ -13,6 +13,7 @@ var UserInfo = require('./models/userInfo');
 var PhoneCategory = require('./models/PhoneCategory')
 var PhoneProduct = require('./models/PhoneProduct')
 var DetailPhone = require('./models/DetailPhone')
+var NewsFeed = require('./models/NewsFeed')
 
 var app = express();
 mongoose.Promise = global.Promise;
@@ -247,9 +248,12 @@ request(urlHome,function(err,response,body){
 
     //Variable Object
     var slideImage = []
+    var objKM = []
+    var objPhone = []
+    var objLaptop = []
+    var objAccessories = []
 
     var $ = cheerio.load(body)
-    
     //Crawl slide image
     var ds = $(body).find('.homebanner #sync1 .item')
     ds.each(function(i,e){
@@ -263,37 +267,42 @@ request(urlHome,function(err,response,body){
     //Crawl 13 khuyen mai noi bat
     var noibat = $(body).find('#owl-promo .item')
     noibat.each(function(i,e){
-
       //href
-      var href = $(this).find('a').attr('href')
-
+      var href = 'https://www.thegioididong.com'+$(this).find('a').attr('href')
       //image
       var imageItem = $(this).find('a img').attr('src')
       if(imageItem == undefined){
         imageItem = $(this).find('a img').attr('data-original')
       }
-      //
-
       //Title
       var titleItem = $(this).find('h3').text()
       //Price
       var newPrice = $(this).find('.price strong').text()
-
       //discount
       var shockprice = $(this).find('.shockprice').text()
       var discount = $(this).find('.discount').text()
       var installment = $(this).find('.installment').text()
       var pre = $(this).find('.per').text()
       //
-
+    
+      var obj = new Object()
+      obj.href = href
+      obj.image = imageItem
+      obj.titleItem= titleItem
+      obj.newPrice=newPrice
+      obj.shockprice=shockprice
+      obj.discount =discount
+      obj.installment=installment
+      obj.pre=pre
+      
+      objKM.push(obj)
     })
 
     //Crawl dien thoai noi bat
     var homeproduct = $(body).find('.homeproduct li')
     homeproduct.each(function(i,e){
       if(i<=7){
-        var id = $(this).attr('data-id')
-        var href = $(this).find('a').attr('href')
+        var href = 'https://www.thegioididong.com/'+$(this).find('a').attr('href')
         var image = $(this).find('img').attr('data-original')
         var titlePhone = $(this).find('h3').text()
         var pricePhone = $(this).find('.price strong').text()
@@ -302,7 +311,19 @@ request(urlHome,function(err,response,body){
         var installment = $(this).find('.installment').text()
         var promo = $(this).find('.promo').text()
         var imagePromo = $(this).find('.promo img').attr('data-original')
-        //console.log('https://www.thegioididong.com/' + href)  
+        
+        var obj = new Object()
+        obj.href = href
+        obj.image = image
+        obj.title = titlePhone
+        obj.price = pricePhone
+        obj.shockprice = shockprice
+        obj.discount = discount
+        obj.installment = installment
+        obj.promo = promo
+        obj.imagePromo = imagePromo
+
+        objPhone.push(obj)
       }
     })
 
@@ -310,28 +331,82 @@ request(urlHome,function(err,response,body){
     var homeLaptop = $(body).find('.homeproduct li')
     homeLaptop.each(function(i,e){
       if(i>7){
-        var id = $(this).attr('data-id')
-        var href = $(this).find('a').attr('href')
+        var href = 'https://www.thegioididong.com'+$(this).find('a').attr('href')
         var imageLaptop = $(this).find('img').attr('data-original')
         var titleLaptop = $(this).find('h3').text()
         var priceLaptop = $(this).find('.price strong').text()
         var installmentLaptop = $(this).find('.installment').text()
         var promoLaptop = $(this).find('.promo').text()
         var imagePromoLaptop = $(this).find('.promo img').attr('data-original')
+
+        var obj = new Object()
+        obj.href = href
+        obj.image = imageLaptop
+        obj.title = titleLaptop
+        obj.price = priceLaptop
+        obj.installment = installmentLaptop
+        obj.promo = promoLaptop
+        obj.imagePromo = imagePromoLaptop
+
+        objLaptop.push(obj)
       }
     })
 
     //Crawl phu kien noi bat
     var homeAccess = $(body).find('.owl-carousel .item')
     homeAccess.each(function(i,e){
-      if(i>12){
-        var href = $(this).find('a').attr('href')
+      if(i>14){
+        var href = 'https://www.thegioididong.com'+$(this).find('a').attr('href')
+        var image = $(this).find('a img').attr('src')
+        if(image == undefined){
+          image = $(this).find('a img').attr('data-original')
+        }
+      
         var title = $(this).find('h3').text()
         var price = $(this).find('.price strong').text()
         var per = $(this).find('.per').text()
+
+        var obj = new Object()
+        obj.href = href
+        obj.title = title
+        obj.price = price
+        obj.per = per
+
+        objAccessories.push(obj)
       }
     })
+
+    var newsFeed = new NewsFeed({
+      slideImage:slideImage,
+      km : objKM,
+      phone:objPhone,
+      laptop:objLaptop,
+      accessories:objAccessories
+    })
+
+    // newsFeed.save(function (err, createNewsFeed) {
+    //   if (err) {
+    //     console.log("error")
+    //   } else {
+    //     console.log("success")
+    //   }
+    // })
   }
+})
+
+app.get('/getHome/', function (req, res) {
+  NewsFeed.find(function (err, newsFeed) {
+    if (err) {
+      res.json({
+        success: 0,
+        message: "Could not get data from mlab"
+      });
+    } else {
+      res.send({
+        NewsFeed: newsFeed
+      });
+    }
+  });
 })
 
 //CrawlItem
@@ -412,24 +487,24 @@ app.get('/getPhoneProduct/', function (req, res) {
   });
 })
 
-// app.post('/createCategoryProduct',function(req,res){
-//   var body = req.body;
-//   var imageValue = body.imageCategory
-//   var type = body.type
+app.post('/createCategoryProduct',function(req,res){
+  var body = req.body;
+  var imageValue = body.imageCategory
+  var type = body.type
 
-//   var category = new PhoneCategory({
-//     imageCategory:imageValue,
-//     type: type
-//   })
+  var category = new PhoneCategory({
+    imageCategory:imageValue,
+    type: type
+  })
 
-//   category.save(function (err, createCategory) {
-//     if (err) {
-//       res.json({ "success": 0, "message": "Could not add record: " + err });
-//     } else {
-//       res.json(createCategory);
-//     }
-//   });
-// })
+  category.save(function (err, createCategory) {
+    if (err) {
+      res.json({ "success": 0, "message": "Could not add record: " + err });
+    } else {
+      res.json(createCategory);
+    }
+  });
+})
 
 app.post('/createCategory', function (req, res) {
   var body = req.body;

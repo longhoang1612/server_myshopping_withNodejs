@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
-var newsfeed = require('./newsfeed');
+var newsfeed = require('./NewsFeed');
 var userInfoSchema = new Schema({
     // id: Number,
 
