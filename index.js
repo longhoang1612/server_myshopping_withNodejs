@@ -227,20 +227,20 @@ var checkCount = function () {
 //   }
 // })
 
-// app.get('/getHome/', function (req, res) {
-//   NewsFeed.find(function (err, newsFeed) {
-//     if (err) {
-//       res.json({
-//         success: 0,
-//         message: "Could not get data from mlab"
-//       });
-//     } else {
-//       res.send({
-//         NewsFeed: newsFeed
-//       });
-//     }
-//   });
-// })
+app.get('/getHome/', function (req, res) {
+  NewsFeed.find(function (err, newsFeed) {
+    if (err) {
+      res.json({
+        success: 0,
+        message: "Could not get data from mlab"
+      });
+    } else {
+      res.send({
+        NewsFeed: newsFeed
+      });
+    }
+  });
+})
 
 // //Crawl Item Phone
 // var urlMobile = "https://www.thegioididong.com/may-tinh-bang-apple-ipad";
