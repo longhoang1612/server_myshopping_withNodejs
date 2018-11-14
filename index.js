@@ -2,8 +2,6 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var Diacritics = require('diacritic');
-var fs = require('fs');
-var array = fs.readFileSync('file.in').toString().split("\n");
 var request = require('request');
 var cheerio = require('cheerio');
 //import model
@@ -66,463 +64,463 @@ var checkCount = function () {
 //   }
 // })
 
-//Crawl Trang chu
-var urlHome = "https://www.thegioididong.com/"
-request(urlHome,function(err,response,body){
-  if(!err && response.statusCode == 200){
+// //Crawl Trang chu
+// var urlHome = "https://www.thegioididong.com/"
+// request(urlHome,function(err,response,body){
+//   if(!err && response.statusCode == 200){
 
-    //Variable Object
-    var slideImage = []
-    var objKM = []
-    var objPhone = []
-    var objLaptop = []
-    var objAccessories = []
+//     //Variable Object
+//     var slideImage = []
+//     var objKM = []
+//     var objPhone = []
+//     var objLaptop = []
+//     var objAccessories = []
 
-    var $ = cheerio.load(body)
-    //Crawl slide image
-    var ds = $(body).find('.homebanner #sync1 .item')
-    ds.each(function(i,e){
-      var image = $(this).find('a img').attr('src')
-      if(image == undefined){
-        image = $(this).find('a img').attr('data-src')
-      }
-      slideImage.push('https:'+image)
-    })
+//     var $ = cheerio.load(body)
+//     //Crawl slide image
+//     var ds = $(body).find('.homebanner #sync1 .item')
+//     ds.each(function(i,e){
+//       var image = $(this).find('a img').attr('src')
+//       if(image == undefined){
+//         image = $(this).find('a img').attr('data-src')
+//       }
+//       slideImage.push('https:'+image)
+//     })
 
-    //Crawl 13 khuyen mai noi bat
-    var noibat = $(body).find('#owl-promo .item')
-    noibat.each(function(i,e){
-      //href
-      var href = 'https://www.thegioididong.com'+$(this).find('a').attr('href')
-      //image
-      var imageItem = $(this).find('a img').attr('src')
-      if(imageItem == undefined){
-        imageItem = $(this).find('a img').attr('data-original')
-      }
-      //Title
-      var titleItem = $(this).find('h3').text()
-      //Price
-      var newPrice = $(this).find('.price strong').text()
-      //discount
-      var shockprice = $(this).find('.shockprice').text()
-      var discount = $(this).find('.discount').text()
-      var installment = $(this).find('.installment').text()
-      var pre = $(this).find('.per').text()
-      var promoImage = $(this).find('.promo img').attr('data-original')
-      if(promoImage==undefined){
-        promoImage = $(this).find('.promo img').attr('src')
-      }
-      var newItem = $(this).find('.new').text()
-      var promo = $(this).find('.promo p').text()
-      //
+//     //Crawl 13 khuyen mai noi bat
+//     var noibat = $(body).find('#owl-promo .item')
+//     noibat.each(function(i,e){
+//       //href
+//       var href = 'https://www.thegioididong.com'+$(this).find('a').attr('href')
+//       //image
+//       var imageItem = $(this).find('a img').attr('src')
+//       if(imageItem == undefined){
+//         imageItem = $(this).find('a img').attr('data-original')
+//       }
+//       //Title
+//       var titleItem = $(this).find('h3').text()
+//       //Price
+//       var newPrice = $(this).find('.price strong').text()
+//       //discount
+//       var shockprice = $(this).find('.shockprice').text()
+//       var discount = $(this).find('.discount').text()
+//       var installment = $(this).find('.installment').text()
+//       var pre = $(this).find('.per').text()
+//       var promoImage = $(this).find('.promo img').attr('data-original')
+//       if(promoImage==undefined){
+//         promoImage = $(this).find('.promo img').attr('src')
+//       }
+//       var newItem = $(this).find('.new').text()
+//       var promo = $(this).find('.promo p').text()
+//       //
     
-      var obj = new Object()
-      obj.href = href
-      obj.image = imageItem
-      obj.titleItem= titleItem
-      obj.newPrice=newPrice
-      obj.shockprice=shockprice
-      obj.discount =discount
-      obj.installment=installment
-      obj.pre=pre
-      obj.promo = promo
-      obj.imagePromo = promoImage
-      obj.newItem = newItem
+//       var obj = new Object()
+//       obj.href = href
+//       obj.image = imageItem
+//       obj.titleItem= titleItem
+//       obj.newPrice=newPrice
+//       obj.shockprice=shockprice
+//       obj.discount =discount
+//       obj.installment=installment
+//       obj.pre=pre
+//       obj.promo = promo
+//       obj.imagePromo = promoImage
+//       obj.newItem = newItem
       
-      objKM.push(obj)
-    })
+//       objKM.push(obj)
+//     })
 
-    //Crawl dien thoai noi bat
-    var homeproduct = $(body).find('.homeproduct li')
-    homeproduct.each(function(i,e){
-      if(i<=7){
-        var href = 'https://www.thegioididong.com/'+$(this).find('a').attr('href')
-        var image = $(this).find('img').attr('data-original')
-        var titlePhone = $(this).find('h3').text()
-        var pricePhone = $(this).find('.price strong').text()
-        var shockprice = $(this).find('.shockprice').text()
-        var discount = $(this).find('.discount').text()
-        var installment = $(this).find('.installment').text()
-        var promo = $(this).find('.promo').text()
-        var imagePromo = $(this).find('.promo img').attr('data-original')
+//     //Crawl dien thoai noi bat
+//     var homeproduct = $(body).find('.homeproduct li')
+//     homeproduct.each(function(i,e){
+//       if(i<=7){
+//         var href = 'https://www.thegioididong.com/'+$(this).find('a').attr('href')
+//         var image = $(this).find('img').attr('data-original')
+//         var titlePhone = $(this).find('h3').text()
+//         var pricePhone = $(this).find('.price strong').text()
+//         var shockprice = $(this).find('.shockprice').text()
+//         var discount = $(this).find('.discount').text()
+//         var installment = $(this).find('.installment').text()
+//         var promo = $(this).find('.promo').text()
+//         var imagePromo = $(this).find('.promo img').attr('data-original')
         
-        var obj = new Object()
-        obj.href = href
-        obj.image = image
-        obj.title = titlePhone
-        obj.price = pricePhone
-        obj.shockprice = shockprice
-        obj.discount = discount
-        obj.installment = installment
-        obj.promo = promo
-        obj.imagePromo = imagePromo
+//         var obj = new Object()
+//         obj.href = href
+//         obj.image = image
+//         obj.title = titlePhone
+//         obj.price = pricePhone
+//         obj.shockprice = shockprice
+//         obj.discount = discount
+//         obj.installment = installment
+//         obj.promo = promo
+//         obj.imagePromo = imagePromo
 
-        objPhone.push(obj)
-      }
-    })
+//         objPhone.push(obj)
+//       }
+//     })
 
-    //Crawl laptop noi bat
-    var homeLaptop = $(body).find('.homeproduct li')
-    homeLaptop.each(function(i,e){
-      if(i>7){
-        var href = 'https://www.thegioididong.com'+$(this).find('a').attr('href')
-        var imageLaptop = $(this).find('img').attr('data-original')
-        var titleLaptop = $(this).find('h3').text()
-        var priceLaptop = $(this).find('.price strong').text()
-        var installmentLaptop = $(this).find('.installment').text()
-        var promoLaptop = $(this).find('.promo').text()
-        var imagePromoLaptop = $(this).find('.promo img').attr('data-original')
+//     //Crawl laptop noi bat
+//     var homeLaptop = $(body).find('.homeproduct li')
+//     homeLaptop.each(function(i,e){
+//       if(i>7){
+//         var href = 'https://www.thegioididong.com'+$(this).find('a').attr('href')
+//         var imageLaptop = $(this).find('img').attr('data-original')
+//         var titleLaptop = $(this).find('h3').text()
+//         var priceLaptop = $(this).find('.price strong').text()
+//         var installmentLaptop = $(this).find('.installment').text()
+//         var promoLaptop = $(this).find('.promo').text()
+//         var imagePromoLaptop = $(this).find('.promo img').attr('data-original')
 
-        var obj = new Object()
-        obj.href = href
-        obj.image = imageLaptop
-        obj.title = titleLaptop
-        obj.price = priceLaptop
-        obj.installment = installmentLaptop
-        obj.promo = promoLaptop
-        obj.imagePromo = imagePromoLaptop
+//         var obj = new Object()
+//         obj.href = href
+//         obj.image = imageLaptop
+//         obj.title = titleLaptop
+//         obj.price = priceLaptop
+//         obj.installment = installmentLaptop
+//         obj.promo = promoLaptop
+//         obj.imagePromo = imagePromoLaptop
 
-        objLaptop.push(obj)
-      }
-    })
+//         objLaptop.push(obj)
+//       }
+//     })
 
-    //Crawl phu kien noi bat
-    var homeAccess = $(body).find('.owl-carousel .item')
-    homeAccess.each(function(i,e){
-      if(i>14){
-        var href = 'https://www.thegioididong.com'+$(this).find('a').attr('href')
-        var image = $(this).find('a img').attr('src')
-        if(image == undefined){
-          image = $(this).find('a img').attr('data-original')
-        }
+//     //Crawl phu kien noi bat
+//     var homeAccess = $(body).find('.owl-carousel .item')
+//     homeAccess.each(function(i,e){
+//       if(i>14){
+//         var href = 'https://www.thegioididong.com'+$(this).find('a').attr('href')
+//         var image = $(this).find('a img').attr('src')
+//         if(image == undefined){
+//           image = $(this).find('a img').attr('data-original')
+//         }
       
-        var title = $(this).find('h3').text()
-        var price = $(this).find('.price strong').text()
-        var per = $(this).find('.per').text()
+//         var title = $(this).find('h3').text()
+//         var price = $(this).find('.price strong').text()
+//         var per = $(this).find('.per').text()
 
-        var obj = new Object()
-        obj.image = image
-        obj.href = href
-        obj.title = title
-        obj.price = price
-        obj.per = per
+//         var obj = new Object()
+//         obj.image = image
+//         obj.href = href
+//         obj.title = title
+//         obj.price = price
+//         obj.per = per
 
-        objAccessories.push(obj)
-      }
-    })
+//         objAccessories.push(obj)
+//       }
+//     })
 
-    var newsFeed = new NewsFeed({
-      slideImage:slideImage,
-      km : objKM,
-      phone:objPhone,
-      laptop:objLaptop,
-      accessories:objAccessories
-    })
+//     var newsFeed = new NewsFeed({
+//       slideImage:slideImage,
+//       km : objKM,
+//       phone:objPhone,
+//       laptop:objLaptop,
+//       accessories:objAccessories
+//     })
 
-    // newsFeed.save(function (err, createNewsFeed) {
-    //   if (err) {
-    //     console.log("error")
-    //   } else {
-    //     console.log("success")
-    //   }
-    // })
-  }
-})
+//     // newsFeed.save(function (err, createNewsFeed) {
+//     //   if (err) {
+//     //     console.log("error")
+//     //   } else {
+//     //     console.log("success")
+//     //   }
+//     // })
+//   }
+// })
 
-app.get('/getHome/', function (req, res) {
-  NewsFeed.find(function (err, newsFeed) {
-    if (err) {
-      res.json({
-        success: 0,
-        message: "Could not get data from mlab"
-      });
-    } else {
-      res.send({
-        NewsFeed: newsFeed
-      });
-    }
-  });
-})
+// app.get('/getHome/', function (req, res) {
+//   NewsFeed.find(function (err, newsFeed) {
+//     if (err) {
+//       res.json({
+//         success: 0,
+//         message: "Could not get data from mlab"
+//       });
+//     } else {
+//       res.send({
+//         NewsFeed: newsFeed
+//       });
+//     }
+//   });
+// })
 
-//Crawl Item Phone
-var urlMobile = "https://www.thegioididong.com/may-tinh-bang-apple-ipad";
-request(urlMobile, function (err, response, body) {
-  if (!err && response.statusCode == 200) {
+// //Crawl Item Phone
+// var urlMobile = "https://www.thegioididong.com/may-tinh-bang-apple-ipad";
+// request(urlMobile, function (err, response, body) {
+//   if (!err && response.statusCode == 200) {
 
-    var ratting
-    var numberRating
-    var deal
+//     var ratting
+//     var numberRating
+//     var deal
 
-    var $ = cheerio.load(body)
-    var ds = $(body).find('.homeproduct li a')
-    var type = $(body).find('.choosedfilter a h2').text()
+//     var $ = cheerio.load(body)
+//     var ds = $(body).find('.homeproduct li a')
+//     var type = $(body).find('.choosedfilter a h2').text()
 
-    ds.each(function (i, e) {
-      var linkUrl = 'https://www.thegioididong.com'+$(this).attr('href')
-      console.log(linkUrl)
-      ratting = $(this).find('.ratingresult .icontgdd-ystar').length
-      numberRating = $(this).find('.ratingresult').text().replace("            ", '').trim();
-      deal = $(this).find('label').text()
+//     ds.each(function (i, e) {
+//       var linkUrl = 'https://www.thegioididong.com'+$(this).attr('href')
+//       console.log(linkUrl)
+//       ratting = $(this).find('.ratingresult .icontgdd-ystar').length
+//       numberRating = $(this).find('.ratingresult').text().replace("            ", '').trim();
+//       deal = $(this).find('label').text()
       
-      crawlerItem(linkUrl,type,ratting,numberRating,deal)
+//       crawlerItem(linkUrl,type,ratting,numberRating,deal)
 
-    })
-  } else {
-    console.log('error')
-  }
-})
+//     })
+//   } else {
+//     console.log('error')
+//   }
+// })
 
-async function crawlerItem(linkUrl,type,ratting,numberRating,deal){
+// async function crawlerItem(linkUrl,type,ratting,numberRating,deal){
 
-  var title;
-  var price;
-  var listKhuyenMai = []
-  var slider = []
-  var listExtra = []
-  var listThongSo = []
-  var characteristics
-  var h2
-  var video
-  var detailContent = []
-  var image
-  var deal
+//   var title;
+//   var price;
+//   var listKhuyenMai = []
+//   var slider = []
+//   var listExtra = []
+//   var listThongSo = []
+//   var characteristics
+//   var h2
+//   var video
+//   var detailContent = []
+//   var image
+//   var deal
 
-  request(linkUrl, function (error, res, body) {
-    if (!error && res.statusCode == 200) {
+//   request(linkUrl, function (error, res, body) {
+//     if (!error && res.statusCode == 200) {
 
-      var $ = cheerio.load(body)
-      var ds = $(body).find('.rowtop')
+//       var $ = cheerio.load(body)
+//       var ds = $(body).find('.rowtop')
 
-      //Crawl title
-      ds.each(function (i, e) {
-        title = $(this).find('h1').text()
-        console.log(title)
-      })
+//       //Crawl title
+//       ds.each(function (i, e) {
+//         title = $(this).find('h1').text()
+//         console.log(title)
+//       })
 
-      //Crawl price, sale, 
-      var ds1 = $(body).find('.rowdetail')
-      ds1.each(function (i, e) {
-        image = $(this).find('.picture img').attr('src')
-        price = $(this).find('.price_sale .area_price strong').text()
-        khuyenmai = $(this).find('.price_sale .area_promotion .infopr span').each(function (i, e) {
-          var km = $(this).text()
-          listKhuyenMai.push(km)
-        })
-      })
+//       //Crawl price, sale, 
+//       var ds1 = $(body).find('.rowdetail')
+//       ds1.each(function (i, e) {
+//         image = $(this).find('.picture img').attr('src')
+//         price = $(this).find('.price_sale .area_price strong').text()
+//         khuyenmai = $(this).find('.price_sale .area_promotion .infopr span').each(function (i, e) {
+//           var km = $(this).text()
+//           listKhuyenMai.push(km)
+//         })
+//       })
 
-      //Sản phẩm đi kèm
-      var ds2 = $(body).find('.gamecombo ul li')
-      ds2.each(function (i, e) {
-        var item = $(this).find('.info h3').text()
-        var imageItem = $(this).find('img').attr('data-original')
-        var obj = new Object();
-        obj.imageExtra = imageItem;
-        obj.titleExtra = item;
-        listExtra.push(obj)
-      })
+//       //Sản phẩm đi kèm
+//       var ds2 = $(body).find('.gamecombo ul li')
+//       ds2.each(function (i, e) {
+//         var item = $(this).find('.info h3').text()
+//         var imageItem = $(this).find('img').attr('data-original')
+//         var obj = new Object();
+//         obj.imageExtra = imageItem;
+//         obj.titleExtra = item;
+//         listExtra.push(obj)
+//       })
 
-      //Crawl thông số
-      var thongso = $(body).find('.box_content .right_content .tableparameter li')
-      thongso.each(function (i, e) {
-        var titleThongSo = $(this).find('span').text()
-        var titleChiTiet = $(this).text()
-        var objThongSo = new Object();
-        objThongSo.titlePara = titleThongSo
-        objThongSo.contentPara = titleChiTiet
-        listThongSo.push(objThongSo)
-      })
+//       //Crawl thông số
+//       var thongso = $(body).find('.box_content .right_content .tableparameter li')
+//       thongso.each(function (i, e) {
+//         var titleThongSo = $(this).find('span').text()
+//         var titleChiTiet = $(this).text()
+//         var objThongSo = new Object();
+//         objThongSo.titlePara = titleThongSo
+//         objThongSo.contentPara = titleChiTiet
+//         listThongSo.push(objThongSo)
+//       })
 
-      //Content
-      var ds3 = $(body).find('.box_content .left_content');
-      ds3.each(function (i, e) {
-        characteristics = $(this).find('.characteristics h2').text()
-        h2 = $(this).find('.boxArticle .area_article h2').text();
-        video = $(this).find('.boxArticle .area_article .video').attr('src');
-        var image = $(this).find('.boxArticle .area_article p').each(function (i, e) {
-          var k = $(this).find('.preventdefault').attr('href')
-          var k1 = $(this).text()
-          var objDetailContent = new Object();
-          objDetailContent.title = k1,
-          objDetailContent.image = k
-          detailContent.push(objDetailContent)
-        })
+//       //Content
+//       var ds3 = $(body).find('.box_content .left_content');
+//       ds3.each(function (i, e) {
+//         characteristics = $(this).find('.characteristics h2').text()
+//         h2 = $(this).find('.boxArticle .area_article h2').text();
+//         video = $(this).find('.boxArticle .area_article .video').attr('src');
+//         var image = $(this).find('.boxArticle .area_article p').each(function (i, e) {
+//           var k = $(this).find('.preventdefault').attr('href')
+//           var k1 = $(this).text()
+//           var objDetailContent = new Object();
+//           objDetailContent.title = k1,
+//           objDetailContent.image = k
+//           detailContent.push(objDetailContent)
+//         })
 
-        //Slider
-        var item1 = $(this).find('.characteristics #owl-detail .item img').each(function (i, e) {
-          var ee = $(this).attr('data-src')
-          slider.push(ee)
-        })
-      })
+//         //Slider
+//         var item1 = $(this).find('.characteristics #owl-detail .item img').each(function (i, e) {
+//           var ee = $(this).attr('data-src')
+//           slider.push(ee)
+//         })
+//       })
 
-      var phoneProduct = new PhoneProduct({
-        type: type,
-        title: title,
-        price: price,
-        deal: deal,
-        image: image,
-        rating: ratting,
-        numberRating: numberRating,
-        listSale: listKhuyenMai,
-        listExtraProduct: listExtra,
-        listParameter: listThongSo,
-        slider: slider,
-        titleH2:h2,
-        titleContent: characteristics,
-        linkVideo: video,
-        detailContent: detailContent
-      });
+//       var phoneProduct = new PhoneProduct({
+//         type: type,
+//         title: title,
+//         price: price,
+//         deal: deal,
+//         image: image,
+//         rating: ratting,
+//         numberRating: numberRating,
+//         listSale: listKhuyenMai,
+//         listExtraProduct: listExtra,
+//         listParameter: listThongSo,
+//         slider: slider,
+//         titleH2:h2,
+//         titleContent: characteristics,
+//         linkVideo: video,
+//         detailContent: detailContent
+//       });
 
-      // phoneProduct.save(function (err, createPhoneProduct) {
-      //   if (err) {
-      //     console.log("error")
-      //   } else {
-      //     console.log("success")
-      //   }
-      // })
+//       // phoneProduct.save(function (err, createPhoneProduct) {
+//       //   if (err) {
+//       //     console.log("error")
+//       //   } else {
+//       //     console.log("success")
+//       //   }
+//       // })
 
-    }
-})
-}
+//     }
+// })
+// }
 
-//CrawlTablet
-var urlTablet = "https://www.thegioididong.com/may-tinh-bang-mobell";
-request(urlTablet, function (err, response, body) {
-  if (!err && response.statusCode == 200) {
+// //CrawlTablet
+// var urlTablet = "https://www.thegioididong.com/may-tinh-bang-mobell";
+// request(urlTablet, function (err, response, body) {
+//   if (!err && response.statusCode == 200) {
 
-    var ratting
-    var numberRating
-    var deal
+//     var ratting
+//     var numberRating
+//     var deal
 
-    var $ = cheerio.load(body)
-    var ds = $(body).find('.homeproduct li a')
-    var type = $(body).find('.choosedfilter a h2').text()
+//     var $ = cheerio.load(body)
+//     var ds = $(body).find('.homeproduct li a')
+//     var type = $(body).find('.choosedfilter a h2').text()
 
-    ds.each(function (i, e) {
-      var linkUrl = 'https://www.thegioididong.com'+$(this).attr('href')
-      console.log(linkUrl)
-      ratting = $(this).find('.ratingresult .icontgdd-ystar').length
-      numberRating = $(this).find('.ratingresult').text().replace("            ", '').trim();
-      deal = $(this).find('label').text()
+//     ds.each(function (i, e) {
+//       var linkUrl = 'https://www.thegioididong.com'+$(this).attr('href')
+//       console.log(linkUrl)
+//       ratting = $(this).find('.ratingresult .icontgdd-ystar').length
+//       numberRating = $(this).find('.ratingresult').text().replace("            ", '').trim();
+//       deal = $(this).find('label').text()
       
-      crawlerItemTablet(linkUrl,type,ratting,numberRating,deal)
+//       crawlerItemTablet(linkUrl,type,ratting,numberRating,deal)
 
-    })
-  } else {
-    console.log('error')
-  }
-})
+//     })
+//   } else {
+//     console.log('error')
+//   }
+// })
 
-async function crawlerItemTablet(linkUrl,type,ratting,numberRating,deal){
+// async function crawlerItemTablet(linkUrl,type,ratting,numberRating,deal){
 
-  var title;
-  var price;
-  var listKhuyenMai = []
-  var slider = []
-  var listExtra = []
-  var listThongSo = []
-  var characteristics
-  var h2
-  var video
-  var detailContent = []
-  var image
-  var deal
+//   var title;
+//   var price;
+//   var listKhuyenMai = []
+//   var slider = []
+//   var listExtra = []
+//   var listThongSo = []
+//   var characteristics
+//   var h2
+//   var video
+//   var detailContent = []
+//   var image
+//   var deal
 
-  request(linkUrl, function (error, res, body) {
-  //  if (res.statusCode == 200) {
+//   request(linkUrl, function (error, res, body) {
+//   //  if (res.statusCode == 200) {
 
-      var $ = cheerio.load(body)
-      var ds = $(body).find('.rowtop')
+//       var $ = cheerio.load(body)
+//       var ds = $(body).find('.rowtop')
 
-      //Crawl title
-      ds.each(function (i, e) {
-        title = $(this).find('h1').text()
-        console.log(title)
-      })
+//       //Crawl title
+//       ds.each(function (i, e) {
+//         title = $(this).find('h1').text()
+//         console.log(title)
+//       })
 
-      //Crawl price, sale, 
-      var ds1 = $(body).find('.rowdetail')
-      ds1.each(function (i, e) {
-        image = $(this).find('.picture img').attr('src')
-        price = $(this).find('.price_sale .area_price strong').text()
-        khuyenmai = $(this).find('.price_sale .area_promotion .infopr span').each(function (i, e) {
-          var km = $(this).text()
-          listKhuyenMai.push(km)
-        })
-      })
+//       //Crawl price, sale, 
+//       var ds1 = $(body).find('.rowdetail')
+//       ds1.each(function (i, e) {
+//         image = $(this).find('.picture img').attr('src')
+//         price = $(this).find('.price_sale .area_price strong').text()
+//         khuyenmai = $(this).find('.price_sale .area_promotion .infopr span').each(function (i, e) {
+//           var km = $(this).text()
+//           listKhuyenMai.push(km)
+//         })
+//       })
 
-      //Sản phẩm đi kèm
-      var ds2 = $(body).find('.gamecombo ul li')
-      ds2.each(function (i, e) {
-        var item = $(this).find('.info h3').text()
-        var imageItem = $(this).find('img').attr('data-original')
-        var obj = new Object();
-        obj.imageExtra = imageItem;
-        obj.titleExtra = item;
-        listExtra.push(obj)
-      })
+//       //Sản phẩm đi kèm
+//       var ds2 = $(body).find('.gamecombo ul li')
+//       ds2.each(function (i, e) {
+//         var item = $(this).find('.info h3').text()
+//         var imageItem = $(this).find('img').attr('data-original')
+//         var obj = new Object();
+//         obj.imageExtra = imageItem;
+//         obj.titleExtra = item;
+//         listExtra.push(obj)
+//       })
 
-      //Crawl thông số
-      var thongso = $(body).find('.box_content .right_content .tableparameter li')
-      thongso.each(function (i, e) {
-        var titleThongSo = $(this).find('span').text()
-        var titleChiTiet = $(this).text()
-        var objThongSo = new Object();
-        objThongSo.titlePara = titleThongSo
-        objThongSo.contentPara = titleChiTiet
-        listThongSo.push(objThongSo)
-      })
+//       //Crawl thông số
+//       var thongso = $(body).find('.box_content .right_content .tableparameter li')
+//       thongso.each(function (i, e) {
+//         var titleThongSo = $(this).find('span').text()
+//         var titleChiTiet = $(this).text()
+//         var objThongSo = new Object();
+//         objThongSo.titlePara = titleThongSo
+//         objThongSo.contentPara = titleChiTiet
+//         listThongSo.push(objThongSo)
+//       })
 
-      //Content
-      var ds3 = $(body).find('.box_content .left_content');
-      ds3.each(function (i, e) {
-        characteristics = $(this).find('.characteristics h2').text()
-        h2 = $(this).find('.boxArticle .area_article h2').text();
-        video = $(this).find('.boxArticle .area_article .video').attr('src');
-        var image = $(this).find('.boxArticle .area_article p').each(function (i, e) {
-          var k = $(this).find('.preventdefault').attr('href')
-          var k1 = $(this).text()
-          var objDetailContent = new Object();
-          objDetailContent.title = k1,
-          objDetailContent.image = k
-          detailContent.push(objDetailContent)
-        })
+//       //Content
+//       var ds3 = $(body).find('.box_content .left_content');
+//       ds3.each(function (i, e) {
+//         characteristics = $(this).find('.characteristics h2').text()
+//         h2 = $(this).find('.boxArticle .area_article h2').text();
+//         video = $(this).find('.boxArticle .area_article .video').attr('src');
+//         var image = $(this).find('.boxArticle .area_article p').each(function (i, e) {
+//           var k = $(this).find('.preventdefault').attr('href')
+//           var k1 = $(this).text()
+//           var objDetailContent = new Object();
+//           objDetailContent.title = k1,
+//           objDetailContent.image = k
+//           detailContent.push(objDetailContent)
+//         })
 
-        //Slider
-        var item1 = $(this).find('.characteristics #owl-detail .item img').each(function (i, e) {
-          var ee = $(this).attr('data-src')
-          slider.push(ee)
-        })
-      })
+//         //Slider
+//         var item1 = $(this).find('.characteristics #owl-detail .item img').each(function (i, e) {
+//           var ee = $(this).attr('data-src')
+//           slider.push(ee)
+//         })
+//       })
 
-      var tabletProduct = new TabletProduct({
-        type: type,
-        title: title,
-        price: price,
-        deal: deal,
-        image: image,
-        rating: ratting,
-        numberRating: numberRating,
-        listSale: listKhuyenMai,
-        listExtraProduct: listExtra,
-        listParameter: listThongSo,
-        slider: slider,
-        titleH2:h2,
-        titleContent: characteristics,
-        linkVideo: video,
-        detailContent: detailContent
-      });
+//       var tabletProduct = new TabletProduct({
+//         type: type,
+//         title: title,
+//         price: price,
+//         deal: deal,
+//         image: image,
+//         rating: ratting,
+//         numberRating: numberRating,
+//         listSale: listKhuyenMai,
+//         listExtraProduct: listExtra,
+//         listParameter: listThongSo,
+//         slider: slider,
+//         titleH2:h2,
+//         titleContent: characteristics,
+//         linkVideo: video,
+//         detailContent: detailContent
+//       });
 
-      // tabletProduct.save(function (err, createTabletProduct) {
-      //   if (err) {
-      //     console.log("error")
-      //   } else {
-      //     console.log("success")
-      //   }
-      // })
+//       // tabletProduct.save(function (err, createTabletProduct) {
+//       //   if (err) {
+//       //     console.log("error")
+//       //   } else {
+//       //     console.log("success")
+//       //   }
+//       // })
 
-   // }
-})
-}
+//    // }
+// })
+// }
 
 app.get('/getTabletProduct/:type', function (req, res) {
   TabletProduct.find({
