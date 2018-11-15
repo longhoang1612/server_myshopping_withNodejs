@@ -10,8 +10,9 @@ var phoneProduct = new Schema({
     numberRating: String,
     listSale: [String],
     listExtraProduct:[{
-        imageExtra:String,
-        titleExtra:String
+        imageExtra : String,
+        titleExtra : String,
+        priceExtra : String
     }],
     listParameter:[{
         titlePara:String,
