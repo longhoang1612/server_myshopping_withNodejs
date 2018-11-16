@@ -376,8 +376,8 @@ app.get('/getHome/', function (req, res) {
   });
 })
 
-// //Crawl Item Phone
-// var urlMobile = "https://www.thegioididong.com/dtdd-apple-iphone";
+//Crawl Item Phone
+// var urlMobile = "https://www.thegioididong.com/laptop_apple_macbook";
 // request(urlMobile, function (err, response, body) {
 //   if (!err && response.statusCode == 200) {
 
@@ -394,8 +394,9 @@ app.get('/getHome/', function (req, res) {
 //       ratting = $(this).find('.ratingresult .icontgdd-ystar').length
 //       numberRating = $(this).find('.ratingresult').text().replace("            ", '').trim();
 //       deal = $(this).find('label').text()
-      
-//       crawlerItem(linkUrl,type,ratting,numberRating,deal)
+//       var title = $(this).find('h3').text()
+//       console.log(title)
+//       crawlerItem(linkUrl,title,type,ratting,numberRating,deal)
 
 //     })
 //   } else {
@@ -403,7 +404,7 @@ app.get('/getHome/', function (req, res) {
 //   }
 // })
 
-// async function crawlerItem(linkUrl,type,ratting,numberRating,deal){
+// async function crawlerItem(linkUrl,titleItem,type,ratting,numberRating,deal){
 
 //   var title;
 //   var price;
@@ -419,7 +420,7 @@ app.get('/getHome/', function (req, res) {
 //   var deal
 
 //   request(linkUrl, function (error, res, body) {
-//     if (!error && res.statusCode == 200) {
+//     if (true) {
 
 //       var $ = cheerio.load(body)
 //       var ds = $(body).find('.rowtop')
@@ -487,9 +488,19 @@ app.get('/getHome/', function (req, res) {
 //         })
 //       })
 
+//       //Type Category
+//       var ty
+//       var typeCategory = $(body).find('.breadcrumb li a')
+//         typeCategory.each(function(i,e){
+//           if(i==1){
+//            ty = $(this).text()
+//           }
+//         })
+
 //       var phoneProduct = new PhoneProduct({
+//         typeCategory:ty,
 //         type: type,
-//         title: title,
+//         title: titleItem,
 //         price: price,
 //         deal: deal,
 //         image: image,
@@ -517,150 +528,10 @@ app.get('/getHome/', function (req, res) {
 // })
 // }
 
-// //CrawlTablet
-// var urlTablet = "https://www.thegioididong.com/may-tinh-bang-mobell";
-// request(urlTablet, function (err, response, body) {
-//   if (!err && response.statusCode == 200) {
-
-//     var ratting
-//     var numberRating
-//     var deal
-
-//     var $ = cheerio.load(body)
-//     var ds = $(body).find('.homeproduct li a')
-//     var type = $(body).find('.choosedfilter a h2').text()
-
-//     ds.each(function (i, e) {
-//       var linkUrl = 'https://www.thegioididong.com'+$(this).attr('href')
-//       console.log(linkUrl)
-//       ratting = $(this).find('.ratingresult .icontgdd-ystar').length
-//       numberRating = $(this).find('.ratingresult').text().replace("            ", '').trim();
-//       deal = $(this).find('label').text()
-      
-//       crawlerItemTablet(linkUrl,type,ratting,numberRating,deal)
-
-//     })
-//   } else {
-//     console.log('error')
-//   }
-// })
-
-// async function crawlerItemTablet(linkUrl,type,ratting,numberRating,deal){
-
-//   var title;
-//   var price;
-//   var listKhuyenMai = []
-//   var slider = []
-//   var listExtra = []
-//   var listThongSo = []
-//   var characteristics
-//   var h2
-//   var video
-//   var detailContent = []
-//   var image
-//   var deal
-
-//   request(linkUrl, function (error, res, body) {
-//   //  if (res.statusCode == 200) {
-
-//       var $ = cheerio.load(body)
-//       var ds = $(body).find('.rowtop')
-
-//       //Crawl title
-//       ds.each(function (i, e) {
-//         title = $(this).find('h1').text()
-//         console.log(title)
-//       })
-
-//       //Crawl price, sale, 
-//       var ds1 = $(body).find('.rowdetail')
-//       ds1.each(function (i, e) {
-//         image = $(this).find('.picture img').attr('src')
-//         price = $(this).find('.price_sale .area_price strong').text()
-//         khuyenmai = $(this).find('.price_sale .area_promotion .infopr span').each(function (i, e) {
-//           var km = $(this).text()
-//           listKhuyenMai.push(km)
-//         })
-//       })
-
-//       //Sản phẩm đi kèm
-//       var ds2 = $(body).find('.gamecombo ul li')
-//       ds2.each(function (i, e) {
-//         var item = $(this).find('.info h3').text()
-//         var imageItem = $(this).find('img').attr('data-original')
-//         var obj = new Object();
-//         obj.imageExtra = imageItem;
-//         obj.titleExtra = item;
-//         listExtra.push(obj)
-//       })
-
-//       //Crawl thông số
-//       var thongso = $(body).find('.box_content .right_content .tableparameter li')
-//       thongso.each(function (i, e) {
-//         var titleThongSo = $(this).find('span').text()
-//         var titleChiTiet = $(this).text()
-//         var objThongSo = new Object();
-//         objThongSo.titlePara = titleThongSo
-//         objThongSo.contentPara = titleChiTiet
-//         listThongSo.push(objThongSo)
-//       })
-
-//       //Content
-//       var ds3 = $(body).find('.box_content .left_content');
-//       ds3.each(function (i, e) {
-//         characteristics = $(this).find('.characteristics h2').text()
-//         h2 = $(this).find('.boxArticle .area_article h2').text();
-//         video = $(this).find('.boxArticle .area_article .video').attr('src');
-//         var image = $(this).find('.boxArticle .area_article p').each(function (i, e) {
-//           var k = $(this).find('.preventdefault').attr('href')
-//           var k1 = $(this).text()
-//           var objDetailContent = new Object();
-//           objDetailContent.title = k1,
-//           objDetailContent.image = k
-//           detailContent.push(objDetailContent)
-//         })
-
-//         //Slider
-//         var item1 = $(this).find('.characteristics #owl-detail .item img').each(function (i, e) {
-//           var ee = $(this).attr('data-src')
-//           slider.push(ee)
-//         })
-//       })
-
-//       var tabletProduct = new TabletProduct({
-//         type: type,
-//         title: title,
-//         price: price,
-//         deal: deal,
-//         image: image,
-//         rating: ratting,
-//         numberRating: numberRating,
-//         listSale: listKhuyenMai,
-//         listExtraProduct: listExtra,
-//         listParameter: listThongSo,
-//         slider: slider,
-//         titleH2:h2,
-//         titleContent: characteristics,
-//         linkVideo: video,
-//         detailContent: detailContent
-//       });
-
-//       // tabletProduct.save(function (err, createTabletProduct) {
-//       //   if (err) {
-//       //     console.log("error")
-//       //   } else {
-//       //     console.log("success")
-//       //   }
-//       // })
-
-//    // }
-// })
-// }
-
-app.get('/getTabletProduct/:type', function (req, res) {
-  TabletProduct.find({
+app.get('/getPhoneProduct/:type', function (req, res) {
+  PhoneProduct.find({
     "type": req.params.type
-  }, function (err, tabletProduct) {
+  }, function (err, phoneProduct) {
     if (err) {
       res.json({
         success: 0,
@@ -668,15 +539,49 @@ app.get('/getTabletProduct/:type', function (req, res) {
       });
     } else {
       res.send({
-        TabletProduct: tabletProduct
+        PhoneProduct: phoneProduct
       });
     }
   });
 })
 
-app.get('/getPhoneProduct/:type', function (req, res) {
-  PhoneProduct.find({
+app.get('/deletePhoneType/:type', function (req, res) {
+  PhoneProduct.deleteMany({
     "type": req.params.type
+  }, function (err, phoneProduct) {
+    if (err) {
+      res.json({
+        success: 0,
+        message: "Could not get data from mlab"
+      });
+    } else {
+      res.send({
+        PhoneProduct: phoneProduct
+      });
+    }
+  });
+})
+
+app.get('/getPhoneProduct/:title', function (req, res) {
+  PhoneProduct.find({
+    "title": req.params.title
+  }, function (err, phoneProduct) {
+    if (err) {
+      res.json({
+        success: 0,
+        message: "Could not get data from mlab"
+      });
+    } else {
+      res.send({
+        PhoneProduct: phoneProduct
+      });
+    }
+  });
+})
+
+app.get('/getPhoneProduct/:typeCategory', function (req, res) {
+  PhoneProduct.find({
+    "typeCategory": req.params.typeCategory
   }, function (err, phoneProduct) {
     if (err) {
       res.json({

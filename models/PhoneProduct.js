@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var phoneProduct = new Schema({
+    typeCategory:String,
     type: String,
     price: String,
     deal:String,
