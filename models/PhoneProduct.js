@@ -25,6 +25,7 @@ var phoneProduct = new Schema({
     topContentP:String,
     detailContent:[{
         title:String,
+        h3:String,
         image:String
     }],
     slider:[String]
