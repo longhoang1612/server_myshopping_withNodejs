@@ -64,122 +64,6 @@ var checkCount = function () {
 //   }
 // })
 
-// async function returnPhone(linkUrl,deal){
-
-//   var title;
-//   var price;
-//   var listKhuyenMai = []
-//   var slider = []
-//   var listExtra = []
-//   var listThongSo = []
-//   var characteristics
-//   var h2
-//   var video
-//   var detailContent = []
-//   var image
-//   var deal
-
-//   request(linkUrl, function (error, res, body) {
-//     if (!error && res.statusCode == 200) {
-
-//       var $ = cheerio.load(body)
-//       var ds = $(body).find('.rowtop')
-
-//       //Crawl title
-//       ds.each(function (i, e) {
-//         title = $(this).find('h1').text()
-//         console.log(title)
-//       })
-
-//       // //Crawl price, sale, 
-//       // var ds1 = $(body).find('.rowdetail')
-//       // ds1.each(function (i, e) {
-//       //   image = $(this).find('.picture img').attr('src')
-//       //   price = $(this).find('.price_sale .area_price strong').text()
-//       //   khuyenmai = $(this).find('.price_sale .area_promotion .infopr span').each(function (i, e) {
-//       //     var km = $(this).text()
-//       //     listKhuyenMai.push(km)
-//       //   })
-//       // })
-
-//       // //Sản phẩm đi kèm
-//       // var ds2 = $(body).find('.gamecombo ul li')
-//       // ds2.each(function (i, e) {
-//       //   var item = $(this).find('.info h3').text()
-//       //   var priceExtra = $(this).find('.info strong').text()
-//       //   var imageItem = $(this).find('img').attr('data-original')
-
-//       //   var obj = new Object();
-//       //   obj.imageExtra = imageItem;
-//       //   obj.titleExtra = item;
-//       //   obj.priceExtra = priceExtra
-//       //   listExtra.push(obj)
-//       // })
-
-//       // //Crawl thông số
-//       // var thongso = $(body).find('.box_content .right_content .tableparameter li')
-//       // thongso.each(function (i, e) {
-//       //   var titleThongSo = $(this).find('span').text()
-//       //   var titleChiTiet = $(this).find('div').text()
-//       //   var objThongSo = new Object();
-//       //   objThongSo.titlePara = titleThongSo
-//       //   objThongSo.contentPara = titleChiTiet
-//       //   listThongSo.push(objThongSo)
-//       // })
-
-//       // //Content
-//       // var ds3 = $(body).find('.box_content .left_content');
-//       // ds3.each(function (i, e) {
-//       //   characteristics = $(this).find('.characteristics h2').text()
-//       //   h2 = $(this).find('.boxArticle .area_article h2').text();
-//       //   video = $(this).find('.boxArticle .area_article .video').attr('src');
-//       //   var image = $(this).find('.boxArticle .area_article p').each(function (i, e) {
-//       //     var k = $(this).find('.preventdefault').attr('href')
-//       //     var k1 = $(this).text()
-//       //     var objDetailContent = new Object();
-//       //     objDetailContent.title = k1,
-//       //     objDetailContent.image = k
-//       //     detailContent.push(objDetailContent)
-//       //   })
-
-//       //   //Slider
-//       //   var item1 = $(this).find('.characteristics #owl-detail .item img').each(function (i, e) {
-//       //     var ee = $(this).attr('data-src')
-//       //     slider.push(ee)
-//       //   })
-//       // })
-
-//       var phoneProduct = new PhoneProduct({
-//         //type: type,
-//         title: title,
-//         // price: price,
-//         // deal: deal,
-//         // image: image,
-//         // //rating: ratting,
-//         // //numberRating: numberRating,
-//         // listSale: listKhuyenMai,
-//         // listExtraProduct: listExtra,
-//         // listParameter: listThongSo,
-//         // slider: slider,
-//         // titleH2:h2,
-//         // titleContent: characteristics,
-//         // linkVideo: video,
-//         // detailContent: detailContent
-//       });
-
-//       // phoneProduct.save(function (err, createPhoneProduct) {
-//       //   if (err) {
-//       //     console.log("error")
-//       //   } else {
-//       //     console.log("success")
-//       //   }
-//       // })
-//       return await (phoneProduct)
-
-//     }
-// })
-// }
-
 // // //Crawl Trang chu
 // var urlHome = "https://www.thegioididong.com/"
 // request(urlHome,function(err,response,body){
@@ -645,7 +529,26 @@ app.post('/createCategoryPhone',function(req,res){
   });
 })
 
-// var urlCate = "https://www.thegioididong.com/dtdd";
+//Get Category with TypeCategory
+app.get('/getCategory/:typeCategory', function (req, res) {
+  PhoneCategory.find({
+    "typeCategory": req.params.typeCategory
+  },function (err, categoryPhones) {
+    if (err) {
+      res.json({
+        success: 0,
+        message: "Could not get data from mlab"
+      });
+    } else {
+      // res.json(foods);
+      res.send({
+        Category: categoryPhones
+      });
+    }
+  });
+});
+
+// var urlCate = "https://www.thegioididong.com/dong-ho-thong-minh";
 // request(urlCate, function (err, response, body) {
 //  // if (!err && response.statusCode == 200) {
 //     var $ = cheerio.load(body)
@@ -669,16 +572,17 @@ app.post('/createCategoryPhone',function(req,res){
 //         console.log(type)
 //         var phoneCategory = new PhoneCategory({
 //           imageCategory: img,
-//           type:type
+//           type:type,
+//           typeCategory:"Đồng hồ thông minh"
 //         })
 
-//         // phoneCategory.save(function (err, createCategory) {
-//         //           if (err) {
-//         //             console.log("error")
-//         //           } else {
-//         //             console.log("success")
-//         //           }
-//         //         })
+//         phoneCategory.save(function (err, createCategory) {
+//                   if (err) {
+//                     console.log("error")
+//                   } else {
+//                     console.log("success")
+//                   }
+//                 })
 //       }else{
 //         console.log('error')
 //       }
@@ -729,23 +633,6 @@ app.post('/createFood', function (req, res) {
       });
     } else {
       res.json(createdFood);
-    }
-  });
-});
-
-//Get all Category Phone
-app.get('/getAllCategoryPhone', function (req, res) {
-  PhoneCategory.find(function (err, categoryPhones) {
-    if (err) {
-      res.json({
-        success: 0,
-        message: "Could not get data from mlab"
-      });
-    } else {
-      // res.json(foods);
-      res.send({
-        Category: categoryPhones
-      });
     }
   });
 });
