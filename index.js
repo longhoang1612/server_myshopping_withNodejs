@@ -528,7 +528,7 @@ app.get('/getHome/', function (req, res) {
 // })
 // }
 
-app.get('/getPhoneProduct/:type', function (req, res) {
+app.get('/getPhoneWithType/:type', function (req, res) {
   PhoneProduct.find({
     "type": req.params.type
   }, function (err, phoneProduct) {
@@ -579,7 +579,7 @@ app.get('/getPhoneProduct/:title', function (req, res) {
   });
 })
 
-app.get('/getPhoneProduct/:typeCategory', function (req, res) {
+app.get('/getPhoneCategory/:typeCategory', function (req, res) {
   PhoneProduct.find({
     "typeCategory": req.params.typeCategory
   }, function (err, phoneProduct) {
