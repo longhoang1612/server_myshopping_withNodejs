@@ -20,7 +20,7 @@ mongoose.connect('mongodb://hoanglong96:hoanglong96@ds111618.mlab.com:11618/hoan
 });
 
 //Set port 
-app.set('port', (process.env.PORT || 1612));
+app.set('port', (process.env.PORT || 040516));
 app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.json());
 
@@ -60,6 +60,32 @@ var checkCount = function () {
 //           //     //res.json(createdPhoneCategory);
 //           //   }
 //           // });
+//     })
+//   }
+// }) 
+
+
+//Crawl Category Phu Kien
+// var urlCategory = "https://www.thegioididong.com/phu-kien";
+// request(urlCategory,function(err,res,body){
+//   if(!err && res.statusCode == 200){
+//     $ = cheerio.load(body)
+//     var ds = $(body).find('.homepage .navaccessories2018 a');
+//         ds.each(function(i,e){
+
+//           var phoneCategory = new PhoneCategory({
+//             imageCategory: $(this).find('h3').text(),
+//             typeCategory:'phu-kien',
+//             type:$(this).find('h3').text()
+//           });
+
+//           phoneCategory.save(function (err, createdPhoneCategory) {
+//             if (err) {
+//               console.log('error')
+//             } else {
+//               console.log('success')
+//             }
+//           });
 //     })
 //   }
 // }) 
@@ -417,6 +443,153 @@ app.get('/getHome/', function (req, res) {
 //     }
 // })
 // }
+
+//Crawl Phu kien
+var urlMobile = "https://www.thegioididong.com/sac-dtdd";
+request(urlMobile, function (err, response, body) {
+  if (!err && response.statusCode == 200) {
+    var deal
+    var $ = cheerio.load(body)
+    var ds = $(body).find('.cate li')
+
+    ds.each(function (i, e) {
+      var linkUrl = 'https://www.thegioididong.com'+$(this).find('a').attr('href')
+      deal = $(this).find('.discountpercent').text()
+      var title = $(this).find('h3').text()
+      crawlerItem(linkUrl,title,deal)
+    })
+  } else {
+    console.log('error')
+  }
+})
+
+async function crawlerItem(linkUrl,titleItem,deal){
+  var price;
+  var hisprice;
+  var listKhuyenMai = []
+  var slider = []
+  var listExtra = []
+  var listCongDung = []
+  var listThongSo = []
+  var rating 
+  var ratingNumber
+  var h2
+  var video
+  var detailContent = []
+  var image
+  var typeCategoryItem
+  var characteristics;
+
+  request(linkUrl, function (error, res, body) {
+    if (true) {
+
+      var $ = cheerio.load(body)
+      var ds = $(body).find('.rowdetail')
+
+      //Crawl price, sale, 
+      ds.each(function (i, e) {
+        image = $(this).find('.picture img').attr('src')
+        price = $(this).find('.price_sale .area_price strong').text()
+        hisprice = $(this).find('.price_sale .area_price .hisprice').text()
+        khuyenmai = $(this).find('.boxdefault .area_promotion .infopr span ul li').each(function (i, e) {
+          var km = $(this).text()
+          listKhuyenMai.push(km)
+        })
+      })
+
+      var dsRating = $(body).find('.rowtop');
+      dsRating.each(function(i,e){
+        ratingNumber = $(this).find('a').text()
+        rating = $(this).find('span').length
+      })
+
+      //Cong dung
+      var ds2 = $(body).find('.plcAcc li')
+      ds2.each(function (i, e) {
+        var congdung = $(this).text()
+        listCongDung.push(congdung)
+      })
+
+      //Crawl thông số
+      var thongso = $(body).find('.box_content .right_content .tableparameter .parameter li')
+      thongso.each(function (i, e) {
+        var titleThongSo = $(this).find('span').text()
+        var titleChiTiet = $(this).find('div').text()
+
+        var objThongSo = new Object();
+        objThongSo.titlePara = titleThongSo
+        objThongSo.contentPara = titleChiTiet
+        listThongSo.push(objThongSo)
+      })
+
+      //Content
+      var ds3 = $(body).find('.box_content .left_content');
+      ds3.each(function (i, e) {
+        h2 = $(this).find('.boxArticle .area_article h2 strong').text();
+        var contentDetail = $(this).find('.boxArticle .area_article')
+        contentDetail.each(function (i, e) {
+
+          var image = $(this).find('p .preventdefault').attr('href')
+          var p = $(this).find('p').text()
+          var h3 = $(this).find('h3').text()
+
+          var objDetailContent = new Object();
+              objDetailContent.title = p
+              objDetailContent.image = image
+              objDetailContent.h3 = h3
+              
+          detailContent.push(objDetailContent)
+        })
+      })
+
+      //Slider
+      var item1 = $(body).find('.colorandpic .owl-carousel .item img').each(function(i,e){
+          var slideItem = 'https:'+$(this).attr('src')
+          slider.push(slideItem)
+      })
+
+      //Type Category
+      var typeCategory = $(body).find('.breadcrumb li a')
+        typeCategory.each(function(i,e){
+          if(i==1){
+            typeCategoryItem = $(this).text()
+          }else if(i==2){
+            type = $(this).text()
+          }
+        })
+
+      var phoneProduct = new PhoneProduct({
+        typeCategory:typeCategoryItem,
+        type: type,
+        title: titleItem,
+        price: price,
+        hisprice:hisprice,
+        deal: deal,
+        image: image,
+        rating: rating,
+        numberRating: ratingNumber,
+        listSale: listKhuyenMai,
+        listExtraProduct: listExtra,
+        listParameter: listThongSo,
+        listCongDung:listCongDung,
+        slider: slider,
+        titleH2:h2,
+        titleContent: characteristics,
+        linkVideo: video,
+        detailContent: detailContent
+      });
+
+      phoneProduct.save(function (err, createPhoneProduct) {
+        if (err) {
+          console.log("error")
+        } else {
+          console.log("success")
+        }
+      })
+
+    }
+})
+}
 
 app.get('/getPhoneWithType/:type', function (req, res) {
   PhoneProduct.find({

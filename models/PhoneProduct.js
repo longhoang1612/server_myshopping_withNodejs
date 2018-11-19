@@ -4,6 +4,7 @@ var phoneProduct = new Schema({
     typeCategory:String,
     type: String,
     price: String,
+    hisprice:String,
     deal:String,
     image: String,
     rating : Number,
@@ -28,6 +29,7 @@ var phoneProduct = new Schema({
         h3:String,
         image:String
     }],
+    listCongDung:[String],
     slider:[String]
   }
 );
