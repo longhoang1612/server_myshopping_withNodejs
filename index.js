@@ -260,163 +260,163 @@ app.get('/getHome/', function (req, res) {
   });
 })
 
-//Crawl Item Phone
-var urlMobile = "https://www.thegioididong.com/laptop-apple-macbook";
-request(urlMobile, function (err, response, body) {
-  if (!err && response.statusCode == 200) {
+//Crawl Laptop
+// var urlMobile = "https://www.thegioididong.com/laptop-apple-macbook";
+// request(urlMobile, function (err, response, body) {
+//   if (!err && response.statusCode == 200) {
 
-    var ratting
-    var numberRating
-    var deal
+//     var ratting
+//     var numberRating
+//     var deal
 
-    var $ = cheerio.load(body)
-    var ds = $(body).find('.homeproduct li a')
-    var type = $(body).find('.choosedfilter a h2').text()
+//     var $ = cheerio.load(body)
+//     var ds = $(body).find('.homeproduct li a')
+//     var type = $(body).find('.choosedfilter a h2').text()
 
-    ds.each(function (i, e) {
-      var linkUrl = 'https://www.thegioididong.com'+$(this).attr('href')
-      ratting = $(this).find('.ratingresult .icontgdd-ystar').length
-      numberRating = $(this).find('.ratingresult').text().replace("            ", '').trim();
-      deal = $(this).find('label').text()
-      var title = $(this).find('h3').text()
-      crawlerItem(linkUrl,title,type,ratting,numberRating,deal)
+//     ds.each(function (i, e) {
+//       var linkUrl = 'https://www.thegioididong.com'+$(this).attr('href')
+//       ratting = $(this).find('.ratingresult .icontgdd-ystar').length
+//       numberRating = $(this).find('.ratingresult').text().replace("            ", '').trim();
+//       deal = $(this).find('label').text()
+//       var title = $(this).find('h3').text()
+//       crawlerItem(linkUrl,title,type,ratting,numberRating,deal)
 
-    })
-  } else {
-    console.log('error1')
-  }
-})
+//     })
+//   } else {
+//     console.log('error1')
+//   }
+// })
 
-async function crawlerItem(linkUrl,titleItem,type,ratting,numberRating,deal){
+// async function crawlerItem(linkUrl,titleItem,type,ratting,numberRating,deal){
 
-  var title;
-  var price;
-  var listKhuyenMai = []
-  var slider = []
-  var listExtra = []
-  var listThongSo = []
-  var characteristics
-  var h2
-  var video
-  var detailContent = []
-  var image
-  var deal
+//   var title;
+//   var price;
+//   var listKhuyenMai = []
+//   var slider = []
+//   var listExtra = []
+//   var listThongSo = []
+//   var characteristics
+//   var h2
+//   var video
+//   var detailContent = []
+//   var image
+//   var deal
 
-  request(linkUrl, function (error, res, body) {
-    if (true) {
+//   request(linkUrl, function (error, res, body) {
+//     if (true) {
 
-      var $ = cheerio.load(body)
-      var ds = $(body).find('.rowtop')
+//       var $ = cheerio.load(body)
+//       var ds = $(body).find('.rowtop')
 
-      //Crawl title
-      ds.each(function (i, e) {
-        title = $(this).find('h1').text()
-      })
+//       //Crawl title
+//       ds.each(function (i, e) {
+//         title = $(this).find('h1').text()
+//       })
 
-      //Crawl price, sale, 
-      var ds1 = $(body).find('.rowdetail')
-      ds1.each(function (i, e) {
-        image = $(this).find('.picture img').attr('src')
-        price = $(this).find('.price_sale .area_price strong').text()
-        khuyenmai = $(this).find('.price_sale .area_promotion .infopr span').each(function (i, e) {
-          var km = $(this).text()
-          listKhuyenMai.push(km)
-        })
-      })
+//       //Crawl price, sale, 
+//       var ds1 = $(body).find('.rowdetail')
+//       ds1.each(function (i, e) {
+//         image = $(this).find('.picture img').attr('src')
+//         price = $(this).find('.price_sale .area_price strong').text()
+//         khuyenmai = $(this).find('.price_sale .area_promotion .infopr span').each(function (i, e) {
+//           var km = $(this).text()
+//           listKhuyenMai.push(km)
+//         })
+//       })
 
-      //Sản phẩm đi kèm
-      var ds2 = $(body).find('.accessories ul li')
-      ds2.each(function (i, e) {
-        var priceExtra = $(this).find('a .gs').text()
-        if(priceExtra==""){
-          priceExtra = $(this).find('a strong').text()
-        }
-        var item = $(this).find('a h3').text()
-        var imageItem = $(this).find('a img').attr('data-original')
+//       //Sản phẩm đi kèm
+//       var ds2 = $(body).find('.accessories ul li')
+//       ds2.each(function (i, e) {
+//         var priceExtra = $(this).find('a .gs').text()
+//         if(priceExtra==""){
+//           priceExtra = $(this).find('a strong').text()
+//         }
+//         var item = $(this).find('a h3').text()
+//         var imageItem = $(this).find('a img').attr('data-original')
 
-        var obj = new Object();
-        obj.imageExtra = imageItem;
-        obj.titleExtra = item;
-        obj.priceExtra = priceExtra
-        listExtra.push(obj)
-      })
+//         var obj = new Object();
+//         obj.imageExtra = imageItem;
+//         obj.titleExtra = item;
+//         obj.priceExtra = priceExtra
+//         listExtra.push(obj)
+//       })
 
-      //Crawl thông số
-      var thongso = $(body).find('.box_content .right_content .tableparameter li')
-      thongso.each(function (i, e) {
-        var titleThongSo = $(this).find('span').text()
-        var titleChiTiet = $(this).find('div').text()
+//       //Crawl thông số
+//       var thongso = $(body).find('.box_content .right_content .tableparameter li')
+//       thongso.each(function (i, e) {
+//         var titleThongSo = $(this).find('span').text()
+//         var titleChiTiet = $(this).find('div').text()
 
-        var objThongSo = new Object();
-        objThongSo.titlePara = titleThongSo
-        objThongSo.contentPara = titleChiTiet
-        listThongSo.push(objThongSo)
-      })
+//         var objThongSo = new Object();
+//         objThongSo.titlePara = titleThongSo
+//         objThongSo.contentPara = titleChiTiet
+//         listThongSo.push(objThongSo)
+//       })
 
-      //Content
-      var ds3 = $(body).find('.box_content .left_content');
-      ds3.each(function (i, e) {
-        characteristics = $(this).find('.characteristics h2').text()
-        h2 = $(this).find('.boxArticle .area_article h2').text();
-        video = $(this).find('.boxArticle .area_article .video').attr('src');
-        var image = $(this).find('.boxArticle .area_article').each(function (i, e) {
-          var image = $(this).find('p .preventdefault').attr('href')
-          var p = $(this).find('p').text()
-          var h3 = $(this).find('h3').text()
+//       //Content
+//       var ds3 = $(body).find('.box_content .left_content');
+//       ds3.each(function (i, e) {
+//         characteristics = $(this).find('.characteristics h2').text()
+//         h2 = $(this).find('.boxArticle .area_article h2').text();
+//         video = $(this).find('.boxArticle .area_article .video').attr('src');
+//         var image = $(this).find('.boxArticle .area_article').each(function (i, e) {
+//           var image = $(this).find('p .preventdefault').attr('href')
+//           var p = $(this).find('p').text()
+//           var h3 = $(this).find('h3').text()
 
-          var objDetailContent = new Object();
-          objDetailContent.title = p
-          objDetailContent.image = image
-          objDetailContent.h3 = h3
-          detailContent.push(objDetailContent)
-        })
+//           var objDetailContent = new Object();
+//           objDetailContent.title = p
+//           objDetailContent.image = image
+//           objDetailContent.h3 = h3
+//           detailContent.push(objDetailContent)
+//         })
 
-        //Slider
-        var item1 = $(this).find('.characteristics #owl-detail .item img').each(function (i, e) {
-          var ee = $(this).attr('data-src')
-          slider.push(ee)
-        })
-      })
+//         //Slider
+//         var item1 = $(this).find('.characteristics #owl-detail .item img').each(function (i, e) {
+//           var ee = $(this).attr('data-src')
+//           slider.push(ee)
+//         })
+//       })
 
-      //Type Category
-      var ty
-      var typeCategory = $(body).find('.breadcrumb li a')
-        typeCategory.each(function(i,e){
-          if(i==1){
-           ty = $(this).text()
-          }
-        })
+//       //Type Category
+//       var ty
+//       var typeCategory = $(body).find('.breadcrumb li a')
+//         typeCategory.each(function(i,e){
+//           if(i==1){
+//            ty = $(this).text()
+//           }
+//         })
 
-      var phoneProduct = new PhoneProduct({
-        typeCategory:ty,
-        type: type,
-        title: titleItem,
-        price: price,
-        deal: deal,
-        image: image,
-        rating: ratting,
-        numberRating: numberRating,
-        listSale: listKhuyenMai,
-        listExtraProduct: listExtra,
-        listParameter: listThongSo,
-        slider: slider,
-        titleH2:h2,
-        titleContent: characteristics,
-        linkVideo: video,
-        detailContent: detailContent
-      });
+//       var phoneProduct = new PhoneProduct({
+//         typeCategory:ty,
+//         type: type,
+//         title: titleItem,
+//         price: price,
+//         deal: deal,
+//         image: image,
+//         rating: ratting,
+//         numberRating: numberRating,
+//         listSale: listKhuyenMai,
+//         listExtraProduct: listExtra,
+//         listParameter: listThongSo,
+//         slider: slider,
+//         titleH2:h2,
+//         titleContent: characteristics,
+//         linkVideo: video,
+//         detailContent: detailContent
+//       });
 
-      // phoneProduct.save(function (err, createPhoneProduct) {
-      //   if (err) {
-      //     console.log("error")
-      //   } else {
-      //     console.log("success")
-      //   }
-      // })
+//       // phoneProduct.save(function (err, createPhoneProduct) {
+//       //   if (err) {
+//       //     console.log("error")
+//       //   } else {
+//       //     console.log("success")
+//       //   }
+//       // })
 
-    }
-})
-}
+//     }
+// })
+// }
 
 app.get('/getPhoneWithType/:type', function (req, res) {
   PhoneProduct.find({
