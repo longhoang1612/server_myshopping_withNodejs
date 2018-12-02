@@ -1,29 +1,20 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
-var newsfeed = require('./NewsFeed');
 var userInfoSchema = new Schema({
-    // id: Number,
-
-    idFb: String,
-    avatar: String,
-    numFollow: Number,
-    userFollow:[{
-        idFb: String,
-        name: String,
-        avatar: String,
+    imageAvatar: String,
+    fullName: String,
+    userName:String,
+    email: String,
+    password:String,
+    sex:String,
+    listFavorites: [{
+        // idPost: String,
+        // datePost: {
+        //     type: Date,
+        //     default: Date.now
+        // }
     }],
-    fullname: String,
-    listNews: [{
-        idPost: String,
-        datePost: {
-            type: Date,
-            default: Date.now
-        }
-    }],
-    date: {
-        type: Date,
-        default: Date.now
-    },
+    date: String,
   }
 );
 var userModel = mongoose.model("userModel", userInfoSchema);

@@ -139,7 +139,7 @@ var checkCount = function () {
 //       var newItem = $(this).find('.new').text()
 //       var promo = $(this).find('.promo p').text()
 //       //
-    
+
 //       var obj = new Object()
 //       obj.href = href
 //       obj.image = imageItem
@@ -152,7 +152,7 @@ var checkCount = function () {
 //       obj.promo = promo
 //       obj.imagePromo = promoImage
 //       obj.newItem = newItem
-      
+
 //       objKM.push(obj)
 //     })
 
@@ -169,7 +169,7 @@ var checkCount = function () {
 //         var installment = $(this).find('.installment').text()
 //         var promo = $(this).find('.promo').text()
 //         var imagePromo = $(this).find('.promo img').attr('data-original')
-        
+
 //         var obj = returnPhone()
 
 //         // obj.href = href
@@ -184,10 +184,10 @@ var checkCount = function () {
 //         // request(href, function (error, res, body) {
 //         //   var title1
 //         //   if (!error && res.statusCode == 200) {
-      
+
 //         //     var $ = cheerio.load(body)
 //         //     var ds = $(body).find('.rowtop')
-      
+
 //         //     //Crawl title
 //         //     ds.each(function (i, e) {
 //         //       title1 = $(this).find('h1').text()
@@ -237,7 +237,7 @@ var checkCount = function () {
 //         if(image == undefined){
 //           image = $(this).find('a img').attr('data-original')
 //         }
-      
+
 //         var title = $(this).find('h3').text()
 //         var price = $(this).find('.price strong').text()
 //         var per = $(this).find('.per').text()
@@ -537,7 +537,7 @@ app.get('/getHome/', function (req, res) {
 //               objDetailContent.title = p
 //               objDetailContent.image = image
 //               objDetailContent.h3 = h3
-              
+
 //           detailContent.push(objDetailContent)
 //         })
 //       })
@@ -689,19 +689,22 @@ app.get('/getTabletProduct/', function (req, res) {
   });
 })
 
-app.post('/createCategoryPhone',function(req,res){
+app.post('/createCategoryPhone', function (req, res) {
   var body = req.body;
   var imageValue = body.imageCategory
   var type = body.type
 
   var category = new PhoneCategory({
-    imageCategory:imageValue,
+    imageCategory: imageValue,
     type: type
   })
 
   category.save(function (err, createCategory) {
     if (err) {
-      res.json({ "success": 0, "message": "Could not add record: " + err });
+      res.json({
+        "success": 0,
+        "message": "Could not add record: " + err
+      });
     } else {
       res.json(createCategory);
     }
@@ -712,7 +715,7 @@ app.post('/createCategoryPhone',function(req,res){
 app.get('/getCategory/:typeCategory', function (req, res) {
   PhoneCategory.find({
     "typeCategory": req.params.typeCategory
-  },function (err, categoryPhones) {
+  }, function (err, categoryPhones) {
     if (err) {
       res.json({
         success: 0,
@@ -852,7 +855,7 @@ app.post('/create_user', function (req, res) {
   var body = req.body;
 
   UserInfo.findOne({
-    'idFb': body.idFb
+    'userName': body.userName
   }, function (err, user) {
     if (err) {
       res.json({
@@ -861,42 +864,40 @@ app.post('/create_user', function (req, res) {
       });
     } else {
       if (user) {
-        // Update each attribute with any possible attribute that may have been submitted in the body of the request
-        // If that attribute isn't in the request body, default back to whatever it was before.
-
-        // user.idFb = req.body.idFb || user.idFb;
-
-        // Save the updated document back to the database
-        user.save(function (err, user) {
-          if (err) {
-            res.json({
-              "success": 0,
-              "message": "Could not update record: " + err
-            });
-          } else {
-            res.json(user);
-            console.log("co user roi")
-          }
+        res.json({
+          "success": 201,
+          "message": "Trung username: " + err
         });
       } else {
-        // var idValue = body.id;
-        var idValue = body.idFb;
-        var avaValue = body.avatar;
-        var nameValue = body.fullname;
-        var numFollowValue = body.numFollow;
-        var userFollowValue = body.userFollow;
-        var dateValue = body.date;
-        var listNewsValue = body.listNews;
+        var imageAvatar = body.imageAvatar;
+        var fullName = body.fullName;
+        var userName = body.userName;
+        var email = body.email;
+        var password = body.password;
+        var sex = body.sex;
+
+        var today = new Date();
+        var dd = today.getDate();
+        var mm = today.getMonth() + 1; //January is 0!
+        var yyyy = today.getFullYear();
+
+        if (dd < 10) {
+          dd = '0' + dd
+        }
+
+        if (mm < 10) {
+          mm = '0' + mm
+        }
 
         var user = new UserInfo({
           // id:idValue,
-          idFb: idValue,
-          avatar: avaValue,
-          fullname: nameValue,
-          numFollow: numFollowValue,
-          userFollow: userFollowValue,
-          date: dateValue,
-          listNews: listNewsValue
+          imageAvatar: imageAvatar,
+          fullName: fullName,
+          userName: userName,
+          email: email,
+          password: password,
+          date: dd + '/' + mm + '/' + yyyy,
+          sex: sex,
         });
         user.save(function (err, createdUser) {
           if (err) {
@@ -1163,7 +1164,6 @@ app.get('/getFoodByType/:typeFood', function (req, res) {
     }
   });
 });
-
 
 //GetFood by id
 app.get('/getFoodById/:idFood', function (req, res) {
