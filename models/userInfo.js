@@ -7,12 +7,17 @@ var userInfoSchema = new Schema({
     email: String,
     password:String,
     sex:String,
-    listFavorites: [{
-        // idPost: String,
-        // datePost: {
-        //     type: Date,
-        //     default: Date.now
-        // }
+    address:[{
+      phoneNumber:String,
+      addressOrder:String,
+      userNameOrder:String
+    }],
+    favorites: [{
+        titleFav:String,
+        imageFav:String,
+        priceFav:String,
+        ratingFav:Number,
+        countRatingFav: String
     }],
     date: String,
   }

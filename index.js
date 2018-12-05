@@ -972,24 +972,15 @@ app.post('/createFood', function (req, res) {
   });
 });
 
-app.put('/updateUser/:userId', function (req, res) {
-  // User.findById(req.params.userId, function (err, user) {
+//Update Favorites Item with User
+app.put('/updateFavorites/:_id', function (req, res) {
   UserInfo.findOne({
-    'idFb': req.params.userId
+    '_id': req.params._id
   }, function (err, user) {
-    // Handle any possible database errors
     if (err) {
       res.status(500).send(err);
     } else {
-      // Update each attribute with any possible attribute that may have been submitted in the body of the request
-      // If that attribute isn't in the request body, default back to whatever it was before.
-
-      // user.idFb = req.body.idFb || user.idFb;
-      user.avatar = req.body.avatar || user.avatar;
-      user.fullname = req.body.fullname || user.fullname;
-      user.userFollow = req.body.userFollow || user.userFollow;
-      user.listNews = req.body.listNews || user.listNews;
-      user.userFollow = req.body.userFollow || user.userFollow;
+      user.favorites = req.body.favorites || user.favorites;
 
       // Save the updated document back to the database
       user.save(function (err, user) {
@@ -1083,9 +1074,9 @@ app.get('/get_all_user', function (req, res) {
 });
 
 //GetProfile User
-app.get('/getUserProfile/:userId', function (req, res) {
+app.get('/getUserProfile/:_id', function (req, res) {
   UserInfo.findOne({
-    'idFb': req.params.userId
+    '_id': req.params.userId
   }, function (err, user) {
     if (err) {
       res.json({
@@ -1098,25 +1089,16 @@ app.get('/getUserProfile/:userId', function (req, res) {
   });
 });
 
-//Update User
-app.put('/updateUser/:userId', function (req, res) {
-  // User.findById(req.params.userId, function (err, user) {
+//Update Address User
+app.put('/updateAddressUser/:_id', function (req, res) {
   UserInfo.findOne({
-    'idFb': req.params.userId
+    '_id': req.params.userId
   }, function (err, user) {
-    // Handle any possible database errors
     if (err) {
       res.status(500).send(err);
     } else {
-      // Update each attribute with any possible attribute that may have been submitted in the body of the request
-      // If that attribute isn't in the request body, default back to whatever it was before.
-
-      // user.idFb = req.body.idFb || user.idFb;
-      user.avatar = req.body.avatar || user.avatar;
-      user.fullname = req.body.fullname || user.fullname;
-      user.userFollow = req.body.userFollow || user.userFollow;
-      user.listNews = req.body.listNews || user.listNews;
-      user.userFollow = req.body.userFollow || user.userFollow;
+    
+      user.address = req.body.address || user.address;
 
       // Save the updated document back to the database
       user.save(function (err, user) {
@@ -1156,73 +1138,6 @@ app.post('/searching', function (req, res) {
   });
 });
 
-//Create Food
-app.post('/createFood', function (req, res) {
-  var body = req.body;
-
-  // var idValue = body.id;
-  var nameValue = body.name;
-  var authorValue = body.author;
-  var imageShowValue = body.imageShow;
-  var typeValue = body.type;
-  var timeValue = body.time;
-  var setsValue = body.sets;
-  var levelValue = body.level;
-  var ratingValue = body.rating;
-  var rateNumValue = body.rateNum;
-  var materialValue = body.material;
-  var cookValue = body.cook;
-  var listRateValue = body.listRate;
-  var authorNameValue = body.authorName;
-
-  var food = new Food({
-    // id:idValue,
-    name: nameValue,
-    author: authorValue,
-    imageShow: imageShowValue,
-    type: typeValue,
-    time: timeValue,
-    sets: setsValue,
-    level: levelValue,
-    rating: ratingValue,
-    rateNum: rateNumValue,
-    material: materialValue,
-    cook: cookValue,
-    listRate: listRateValue,
-    authorName: authorNameValue
-  });
-
-
-  food.save(function (err, createdFood) {
-    if (err) {
-      res.json({
-        "success": 0,
-        "message": "Could not add record: " + err
-      });
-    } else {
-      res.json(createdFood);
-    }
-  });
-});
-
-//Get Food
-app.get('/getFood', function (req, res) {
-  Food.find(function (err, foods) {
-    if (err) {
-      res.json({
-        success: 0,
-        message: "Could not get data from mlab"
-      });
-    } else {
-      // res.json(foods);
-      res.send({
-        food: foods
-      });
-    }
-  });
-});
-
-
 //GetTopFood
 app.get('/getTopFood', function (req, res) {
   var mysort = {
@@ -1242,48 +1157,11 @@ app.get('/getTopFood', function (req, res) {
   });
 });
 
+//Delete Product with ID
+app.delete('/deleteProduct/:_id', function (req, res) {
+  var productID = req.params._id;
 
-//UpdateFood
-app.put('/updateFood/:foodId', function (req, res) {
-  Food.findById(req.params.foodId, function (err, food) {
-    // Handle any possible database errors
-    if (err) {
-      res.status(500).send(err);
-    } else {
-      // Update each attribute with any possible attribute that may have been submitted in the body of the request
-      // If that attribute isn't in the request body, default back to whatever it was before.
-
-
-      food.name = req.body.name || food.name;
-      food.author = req.body.author || food.author;
-      food.imageShow = req.body.imageShow || food.imageShow;
-      food.type = req.body.type || food.type;
-      food.time = req.body.time || food.time;
-      food.sets = req.body.sets || food.sets;
-      food.level = req.body.level || food.level;
-      food.rating = req.body.rating || food.rating;
-      food.rateNum = req.body.rateNum || food.rateNum;
-      food.material = req.body.material || food.material;
-      food.cook = req.body.cook || food.cook;
-      food.listRate = req.body.listRate || food.listRate;
-      food.authorName = req.body.authorName || food.authorName;
-
-      // Save the updated document back to the database
-      food.save(function (err, food) {
-        if (err) {
-          res.status(500).send(err)
-        }
-        res.send(food);
-      });
-    }
-  });
-});
-
-//Delete Food
-app.delete('/deleteFood/:foodId', function (req, res) {
-  var foodId = req.params.foodId;
-
-  Food.findByIdAndRemove(foodId, function (error, food) {
+  PhoneProduct.findByIdAndRemove(productID, function (error, product) {
     if (err) {
       res.json({
         "success": 0,
@@ -1294,42 +1172,6 @@ app.delete('/deleteFood/:foodId', function (req, res) {
         "success": 1,
         "message": "Delete succesfully"
       });
-    }
-  });
-});
-
-//GetFood by type
-app.get('/getFoodByType/:typeFood', function (req, res) {
-  var typeFood = req.params.typeFood;
-  Food.find({
-    'type': typeFood
-  }, function (err, foods) {
-    if (err) {
-      res.json({
-        success: 0,
-        message: "Could not get data from mlab"
-      });
-    } else {
-      // res.json(foods);
-      res.send({
-        food: foods
-      });
-    }
-  });
-});
-
-//GetFood by id
-app.get('/getFoodById/:idFood', function (req, res) {
-  var idFood = req.params.idFood;
-  Food.findById(idFood, function (err, food) {
-    if (err) {
-      res.json({
-        success: 0,
-        message: "Could not get data from mlab"
-      });
-    } else {
-      // res.json(foods);
-      res.send(food);
     }
   });
 });
