@@ -12,6 +12,7 @@ var PhoneCategory = require('./models/PhoneCategory')
 var PhoneProduct = require('./models/PhoneProduct')
 var TabletProduct = require('./models/TabletProduct')
 var NewsFeed = require('./models/NewsFeed')
+var Order = require('./models/Order')
 
 var app = express();
 mongoose.Promise = global.Promise;
@@ -770,6 +771,158 @@ app.get('/getCategory/:typeCategory', function (req, res) {
 //       }
 //   })
 // }
+
+//Create Product
+app.post('/createProduct', function (req, res) {
+  var body = req.body;
+
+  var typeCategoryValue = body.typeCategory;
+  var typeValue = body.type;
+  var priceValue = body.price;
+  var hispriceValue = body.hisprice;
+  var dealValue = body.deal;
+  var imageValue = body.image;
+  var ratingValue = body.rating;
+  var titleValue = body.title;
+  var numberRatingValue = body.numberRating;
+  var listSaleValue = body.listSale;
+  var listExtraProductValue = body.listExtraProduct;
+  var listParameterValue = body.listParameter;
+  var titleH2Value = body.titleH2;
+  var titleContentValue = body.titleContent;
+  var linkVideoValue = body.linkVideo;
+  var topContentPValue = body.topContentP;
+  var detailContentValue = body.detailContent;
+  var listCongDungValue = body.listCongDung;
+  var sliderValue = body.slider;
+
+  var phoneProduct = new PhoneProduct({
+    typeCategory:typeCategoryValue,
+    type: typeValue,
+    price: priceValue,
+    hisprice:hispriceValue,
+    deal:dealValue,
+    image: imageValue,
+    rating : ratingValue,
+    title: titleValue,
+    numberRating: numberRatingValue,
+    listSale: listSaleValue,
+    listExtraProduct:listExtraProductValue,
+    listParameter:listParameterValue,
+    titleH2:titleH2Value,
+    titleContent:titleContentValue,
+    linkVideo: linkVideoValue,
+    topContentP:topContentPValue,
+    detailContent:detailContentValue,
+    listCongDung:listCongDungValue,
+    slider:sliderValue
+  });
+
+
+  phoneProduct.save(function (err, createProduct) {
+    if (err) {
+      res.json({
+        "success": 0,
+        "message": "Could not add record: " + err
+      });
+    } else {
+      res.json(createProduct);
+    }
+  });
+});
+
+//Create Order
+app.post('/createOrder', function (req, res) {
+  var body = req.body;
+
+  var idUserValue = body.idUser;
+  var typeOrderValue = body.typeOrder;
+  var dateOrderValue = body.dateOrder;
+  var statusOrderValue = body.statusOrder;
+  var addressUserValue = body.addressUserValue;
+  var nameUserValue = body.nameUserValue;
+  var phoneNumberValue = body.phoneNumber;
+  var typePaymentValue = body.typePayment;
+  var cartValue = body.cart;
+
+  var order = new Order({
+    idUser:idUserValue,
+    typeOrder: typeOrderValue,
+    dateOrder:dateOrderValue,
+    statusOrder:statusOrderValue,
+    addressUser: addressUserValue,
+    nameUser:nameUserValue,
+    phoneNumber:phoneNumberValue,
+    typePayment:typePaymentValue,
+    cart: cartValue
+  });
+
+
+  order.save(function (err, createOrder) {
+    if (err) {
+      res.json({
+        "success": 0,
+        "message": "Could not add record: " + err
+      });
+    } else {
+      res.json(createOrder);
+    }
+  });
+});
+
+//Get All Order
+app.get('/getOrder', function (req, res) {
+  Order.find(function (err, order) {
+    if (err) {
+      res.json({
+        success: 0,
+        message: "Could not get data from mlab"
+      });
+    } else {
+      res.send({Orders : order});
+    }
+  });
+});
+
+//Get Order with idUser
+app.get('/getOrder/:idUser', function (req, res) {
+  Order.find({
+    "idUser": req.params.idUser
+  }, function (err, orderProducts) {
+    if (err) {
+      res.json({
+        success: 0,
+        message: "Could not get data from mlab"
+      });
+    } else {
+      res.send({
+        Orders: orderProducts
+      });
+    }
+  });
+});
+
+//Update Order
+app.put('/updateOrder/:_id', function (req, res) {
+  Order.findOne({
+    '_id': req.params._id
+  }, function (err, order) {
+    // Handle any possible database errors
+    if (err) {
+      res.status(500).send(err);
+    } else {
+      order.statusOrder = req.body.statusOrder || order.statusOrder
+
+      order.save(function (err, order) {
+        if (err) {
+          res.status(500).send(err)
+        } else {
+          res.send(order);
+        }
+      });
+    }
+  });
+});
 
 app.post('/createFood', function (req, res) {
   var body = req.body;
