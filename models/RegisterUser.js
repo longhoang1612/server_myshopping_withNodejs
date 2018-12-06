@@ -5,6 +5,7 @@ var registerSchema = new Schema({
   password:String,
   salt:String,
   fullname:String,
+  dateJoin:String,
   sex:String,
   address:[{
       phoneNumber:String,

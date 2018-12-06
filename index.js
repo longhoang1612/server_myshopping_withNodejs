@@ -88,13 +88,15 @@ app.post('/register',(request,response,next)=>{
   var fullname = post_data.fullname;
   var email = post_data.email;
   var sex = post_data.sex;
+  var dateJoin = post_data.dateJoin;
 
   var insertJson = new RegisterUser({
     email:email,
     password:password,
     salt:salt,
     fullname:fullname,
-    sex:sex
+    sex:sex,
+    dateJoin: dateJoin
   });
 
   RegisterUser.find({'email':email}).count(function(err,number){
@@ -134,8 +136,7 @@ app.post('/login',function(request,response,next){
         var hash_password = checkHashPassword(userPassword,salt).passwordHash;
         var encrypted_password = user.password;
         if(hash_password = encrypted_password){
-          response.json('Login success');
-          console.log('Login success');
+          response.json(user)
         }
       });
     }
