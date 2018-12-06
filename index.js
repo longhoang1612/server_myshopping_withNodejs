@@ -13,8 +13,42 @@ var PhoneProduct = require('./models/PhoneProduct')
 var TabletProduct = require('./models/TabletProduct')
 var NewsFeed = require('./models/NewsFeed')
 var Order = require('./models/Order')
+var RegisterUser = require('./models/RegisterUser')
+
+//LOGIN
+var ObjectID = mongoose.ObjectID
+var crypto = require('crypto')
+
+//CREATE FUNCTION TO RANDOM SALT
+var genRandomString = function(length){
+  return crypto.randomBytes(Math.ceil(length/2))
+                .toString('hex'.slice(0,length));
+}
+
+var sha512 = function(password,salt){
+  var hash = crypto.createHmac('sha512',salt);
+  hash.update(password);
+  var value = hash.digest('hex');
+  return{
+    salt:salt,
+    passwordHash:value
+  }
+}
+
+function saltHashPassword(userPassword){
+  var salt = genRandomString(16);
+  var passwordData = sha512(userPassword,salt);
+  return passwordData;
+}
+
+function checkHashPassword(userPassword,salt){
+  var passwordData = sha512(userPassword,salt)
+  return passwordData;
+}
 
 var app = express();
+
+//MONGO CLIENT
 mongoose.Promise = global.Promise;
 mongoose.connect('mongodb://hoanglong96:hoanglong96@ds111618.mlab.com:11618/hoanglongdb', {
   useMongoClient: true
@@ -24,6 +58,7 @@ mongoose.connect('mongodb://hoanglong96:hoanglong96@ds111618.mlab.com:11618/hoan
 app.set('port', (process.env.PORT || 040516));
 app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended:true}));
 
 // views is directory for all template files
 app.set('views', __dirname + '/views');
@@ -40,6 +75,85 @@ app.listen(app.get('port'), function () {
 var checkCount = function () {
   console.log("hihi")
 }
+
+//API LOGIN
+app.post('/register',(request,response,next)=>{
+  var post_data = request.body;
+  var plaint_password = post_data.password;
+  var hash_data = saltHashPassword(plaint_password);
+
+  var password = hash_data.passwordHash;
+
+  var salt = hash_data.salt;
+  var fullname = post_data.fullname;
+  var email = post_data.email;
+  var sex = post_data.sex;
+
+  var insertJson = new RegisterUser({
+    email:email,
+    password:password,
+    salt:salt,
+    fullname:fullname,
+    sex:sex
+  });
+
+  RegisterUser.find({'email':email}).count(function(err,number){
+    if(number!=0){
+      response.json({
+        statusCode:101,
+        message:"Email already exists"
+      })
+    }else{
+      insertJson.save(function(error,res){
+        if(error){
+          response.json({
+            statusCode:104,
+            message:"Registrantion error"
+          })
+        }else{
+          response.json(res)
+        }
+      })
+    }
+  })
+
+});
+
+app.post('/login',function(request,response,next){
+  var body = request.body;
+  var email = body.email;
+  var userPassword = body.password;
+
+  RegisterUser.find({'email':email}).count(function(err,number){
+    if(number==0){
+      response.json('Email not exists')
+      console.log('Email not exists')
+    }else{
+      RegisterUser.findOne({'email':email},function(err,user){
+        var salt = user.salt;
+        var hash_password = checkHashPassword(userPassword,salt).passwordHash;
+        var encrypted_password = user.password;
+        if(hash_password = encrypted_password){
+          response.json('Login success');
+          console.log('Login success');
+        }
+      });
+    }
+  });
+});
+
+app.get('/getUser',function(error,response){
+  RegisterUser.find(function (err, userRegister) {
+    if (err) {
+      response.json({
+        success: 0,
+        message: "Could not get data from mlab"
+      });
+    } else {
+      response.send(userRegister);
+    }
+  })
+});
 
 //crawl category
 // var urlCategory = "https://www.thegioididong.com/dtdd";
