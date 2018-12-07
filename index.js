@@ -6,7 +6,6 @@ var request = require('request');
 var cheerio = require('cheerio');
 
 //import model
-var User = require('./models/user');
 var UserInfo = require('./models/userInfo');
 var PhoneCategory = require('./models/PhoneCategory')
 var PhoneProduct = require('./models/PhoneProduct')
