@@ -543,25 +543,10 @@ app.post('/create_user', function (req, res) {
   });
 });
 
-//Get All User
-app.get('/get_all_user', function (req, res) {
-  UserInfo.find(function (err, users) {
-    if (err) {
-      res.json({
-        success: 0,
-        message: "Could not get data from mlab"
-      });
-    } else {
-      // res.json(foods);
-      res.send(users);
-    }
-  });
-});
-
 //GetProfile User
 app.get('/getUserProfile/:_id', function (req, res) {
-  UserInfo.findOne({
-    '_id': req.params.userId
+  RegisterUser.findOne({
+    '_id': req.params._id
   }, function (err, user) {
     if (err) {
       res.json({
@@ -576,8 +561,8 @@ app.get('/getUserProfile/:_id', function (req, res) {
 
 //Update Address User
 app.put('/updateAddressUser/:_id', function (req, res) {
-  UserInfo.findOne({
-    '_id': req.params.userId
+  RegisterUser.findOne({
+    '_id': req.params._id
   }, function (err, user) {
     if (err) {
       res.status(500).send(err);
