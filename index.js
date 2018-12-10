@@ -458,13 +458,19 @@ app.put('/updateOrder/:_id', function (req, res) {
 
 //Update Favorites Item with User
 app.put('/updateFavorites/:_id', function (req, res) {
-  UserInfo.findOne({
+  RegisterUser.findOne({
     '_id': req.params._id
   }, function (err, user) {
     if (err) {
       res.status(500).send(err);
     } else {
+    
+      // user.email = req.body.email || user.email;
+      // user.password = req.body.password || user.password;
+      // user.fullname = req.body.fullname || user.fullname;
+      // user.sex = req.body.sex || user.sex;
       user.favorites = req.body.favorites || user.favorites;
+      //user.address = req.body.address || user.address;
 
       // Save the updated document back to the database
       user.save(function (err, user) {
