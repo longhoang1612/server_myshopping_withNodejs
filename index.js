@@ -435,9 +435,9 @@ app.get('/getOrder/:idUser', function (req, res) {
 });
 
 //Update Order
-app.put('/updateOrder/:_id', function (req, res) {
+app.put('/updateOrder/:email', function (req, res) {
   Order.findOne({
-    '_id': req.params._id
+    'email': req.params._id
   }, function (err, order) {
     // Handle any possible database errors
     if (err) {
@@ -457,9 +457,9 @@ app.put('/updateOrder/:_id', function (req, res) {
 });
 
 //Update Favorites Item with User
-app.put('/updateFavorites/:_id', function (req, res) {
+app.put('/updateFavorites/:email', function (req, res) {
   RegisterUser.findOne({
-    '_id': req.params._id
+    'email': req.params.email
   }, function (err, user) {
     if (err) {
       res.status(500).send(err);
@@ -565,9 +565,9 @@ app.get('/getUserProfile/:_id', function (req, res) {
 });
 
 //Update Address User
-app.put('/updateAddressUser/:_id', function (req, res) {
+app.put('/updateAddressUser/:email', function (req, res) {
   RegisterUser.findOne({
-    '_id': req.params._id
+    'email': req.params.email
   }, function (err, user) {
     if (err) {
       res.status(500).send(err);
