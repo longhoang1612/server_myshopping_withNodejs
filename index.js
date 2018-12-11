@@ -464,6 +464,14 @@ app.put('/updateFavorites/:email', function (req, res) {
     if (err) {
       res.status(500).send(err);
     } else {
+      
+      // var favorites = [{
+      //   titleFav: req.body.titleFav,
+      //   imageFav:req.body.imageFav,
+      //   priceFav:req.body.priceFav,
+      //   ratingFav:req.body.ratingFav,
+      //   countRatingFav: req.body.countRatingFav
+      // }]
     
       // user.email = req.body.email || user.email;
       // user.password = req.body.password || user.password;
