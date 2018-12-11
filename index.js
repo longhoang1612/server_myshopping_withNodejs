@@ -463,24 +463,8 @@ app.put('/updateFavorites/:email', function (req, res) {
   }, function (err, user) {
     if (err) {
       res.status(500).send(err);
-    } else {
-      
-      // var favorites = [{
-      //   titleFav: req.body.titleFav,
-      //   imageFav:req.body.imageFav,
-      //   priceFav:req.body.priceFav,
-      //   ratingFav:req.body.ratingFav,
-      //   countRatingFav: req.body.countRatingFav
-      // }]
-    
-      // user.email = req.body.email || user.email;
-      // user.password = req.body.password || user.password;
-      // user.fullname = req.body.fullname || user.fullname;
-      // user.sex = req.body.sex || user.sex;
+    } else { 
       user.favorites = req.body.favorites || user.favorites;
-      //user.address = req.body.address || user.address;
-
-      // Save the updated document back to the database
       user.save(function (err, user) {
         if (err) {
           res.status(500).send(err)
