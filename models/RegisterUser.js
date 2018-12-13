@@ -20,10 +20,10 @@ var registerSchema = new Schema({
       countRatingFav: String
   }],
   cartCurrent:[{
-      titleCart:String,
-      priceCart:String,
-      imageCart:String,
-      quantityCart:String
+    titleItem:String,
+    priceItem:String,
+    imageItem:String,
+    quantityItem:Number
   }],
   date: String,
   }
