@@ -541,9 +541,9 @@ app.post('/create_user', function (req, res) {
 });
 
 //GetProfile User
-app.get('/getUserProfile/:_id', function (req, res) {
+app.get('/getUserProfile/:email', function (req, res) {
   RegisterUser.findOne({
-    '_id': req.params._id
+    'email': req.params.email
   }, function (err, user) {
     if (err) {
       res.json({
