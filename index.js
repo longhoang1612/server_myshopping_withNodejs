@@ -580,7 +580,7 @@ app.put('/updateAddressUser/:email', function (req, res) {
 });
 
 //Update Current Cart
-app.put('/updateCurrentCart/:email', function (req, res) {
+app.put('/cartUpload/:email', function (req, res) {
   RegisterUser.findOne({
     'email': req.params.email
   }, function (err, user) {
