@@ -13,7 +13,8 @@ var orderProduct = new Schema({
     cart: [{
         titleItem:String,
         imageItem:String,
-        priceItem:String
+        priceItem:String,
+        quantityItem:Number
     }],
   }
 );
