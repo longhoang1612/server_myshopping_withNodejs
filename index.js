@@ -371,8 +371,8 @@ app.post('/createOrder', function (req, res) {
   var typeOrderValue = body.typeOrder;
   var dateOrderValue = body.dateOrder;
   var statusOrderValue = body.statusOrder;
-  var addressUserValue = body.addressUserValue;
-  var nameUserValue = body.nameUserValue;
+  var addressUserValue = body.addressUser;
+  var nameUserValue = body.nameUser;
   var phoneNumberValue = body.phoneNumber;
   var typePaymentValue = body.typePayment;
   var cartValue = body.cart;
