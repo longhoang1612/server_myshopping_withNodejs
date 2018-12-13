@@ -13,11 +13,17 @@ var registerSchema = new Schema({
       userNameOrder:String
   }],
   favorites: [{
-        titleFav:String,
-        imageFav:String,
-        priceFav:String,
-        ratingFav:Number,
-        countRatingFav: String
+      titleFav:String,
+      imageFav:String,
+      priceFav:String,
+      ratingFav:Number,
+      countRatingFav: String
+  }],
+  cartCurrent:[{
+      titleCart:String,
+      priceCart:String,
+      imageCart:String,
+      quantityCart:String
   }],
   date: String,
   }

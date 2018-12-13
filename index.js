@@ -437,7 +437,7 @@ app.get('/getOrder/:idUser', function (req, res) {
 //Update Order
 app.put('/updateOrder/:email', function (req, res) {
   Order.findOne({
-    'email': req.params._id
+    'email': req.params.email
   }, function (err, order) {
     // Handle any possible database errors
     if (err) {
@@ -579,6 +579,29 @@ app.put('/updateAddressUser/:email', function (req, res) {
   });
 });
 
+//Update Current Cart
+app.put('/updateCurrentCart/:email', function (req, res) {
+  RegisterUser.findOne({
+    'email': req.params.email
+  }, function (err, user) {
+    if (err) {
+      res.status(500).send(err);
+    } else {
+    
+      user.cartCurrent = req.body.cartCurrent || user.cartCurrent;
+
+      // Save the updated document back to the database
+      user.save(function (err, user) {
+        if (err) {
+          res.status(500).send(err)
+        } else {
+          res.send(user);
+        }
+      });
+    }
+  });
+});
+
 //Search
 app.post('/searching', function (req, res) {
   var body = req.body;
@@ -640,42 +663,5 @@ app.delete('/deleteProduct/:_id', function (req, res) {
         "message": "Delete succesfully"
       });
     }
-  });
-});
-
-//GetFood by user
-app.get('/getFoodByUser/:userId', function (req, res) {
-  var userId = req.params.userId;
-  Food.find({
-    'author': userId
-  }, function (err, foods) {
-    if (err) {
-      res.json({
-        success: 0,
-        message: "Could not get data from mlab"
-      });
-    } else {
-      // res.json(foods);
-      res.send({
-        food: foods
-      });
-    }
-  });
-});
-
-//GetFavorite Food
-app.get('/getFoodFavorite/:userId', function (req, res) {
-
-  User.findOne({
-    'idFb': req.params.userId
-  }).populate('listFavorite').exec(function (err, userFound) {
-    if (err)
-      console.log('Error in view survey codes function');
-    if (!userFound || userFound.listFavorite.length < 1)
-      res.send('No favorite are yet added.');
-    else
-      res.send({
-        food: userFound.listFavorite
-      });
   });
 });
