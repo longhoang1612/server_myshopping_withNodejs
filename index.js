@@ -617,7 +617,7 @@ app.put('/updateInfo/:email', function (req, res) {
       res.status(500).send(err);
     } else {
       
-      user.fullName = req.body.fullName || user.fullName;
+      user.fullname = req.body.fullname || user.fullname;
       user.address = req.body.address || user.address;
       user.birthday = req.body.birthday || user.birthday;
       user.sex = req.body.sex || user.sex; 
