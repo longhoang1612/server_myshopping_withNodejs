@@ -435,7 +435,7 @@ app.get('/getOrder/:idUser', function (req, res) {
 });
 
 app.get('/getOrderByID/:idOrder', function (req, res) {
-  Order.find({
+  Order.findOne({
     "_id": req.params.idOrder
   }, function (err, orderProducts) {
     if (err) {
@@ -444,9 +444,22 @@ app.get('/getOrderByID/:idOrder', function (req, res) {
         message: "Could not get data from mlab"
       });
     } else {
-      res.send({
-        Orders: orderProducts
+      res.send(orderProducts);
+    }
+  });
+});
+
+app.get('/getOrderByStatus/:statusOrder', function (req, res) {
+  Order.find({
+    "statusOrder": req.params.statusOrder
+  }, function (err, orderProducts) {
+    if (err) {
+      res.json({
+        success: 0,
+        message: "Could not get data from mlab"
       });
+    } else {
+      res.send({Orders: orderProducts});
     }
   });
 });
