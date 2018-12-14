@@ -417,6 +417,21 @@ app.get('/getComment/:idProduct', function (req, res) {
   });
 });
 
+app.get('/getAllComment', function (req, res) {
+  Comment.find(function (err, createComment) {
+    if (err) {
+      res.json({
+        success: 0,
+        message: "Could not get data from mlab"
+      });
+    } else {
+      res.send({
+        Comment: createComment
+      });
+    }
+  });
+});
+
 //Create Order
 app.post('/createOrder', function (req, res) {
   var body = req.body;
@@ -713,26 +728,25 @@ app.put('/cartUpload/:email', function (req, res) {
 });
 
 //Search
-app.post('/searching', function (req, res) {
-  var body = req.body;
-  var keySearchFormat = Diacritics.clean(body.keySearch.toLowerCase());
-  Food.find(function (err, foods) {
+app.post('/searchItems', function (req, res) {
+  var body = req.params;
+  var keySearchFormat = Diacritics.clean(body.keySearch);
+  PhoneProduct.find(function (err, foods) {
     if (err) {
       res.json({
         success: 0,
         message: "Could not get data from mlab"
       });
     } else {
-      // res.json(foods);
       var foodsReturn = [];
       foods.forEach(function (value) {
-        var nameFormat = Diacritics.clean(value.name.toLowerCase());
+        var nameFormat = Diacritics.clean(value.name);
         if (nameFormat.indexOf(keySearchFormat) > -1) {
           foodsReturn.push(value);
         }
       });
       res.json({
-        food: foodsReturn
+        PhoneProduct: foodsReturn
       });
     }
   });
