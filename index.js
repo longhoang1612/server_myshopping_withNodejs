@@ -434,10 +434,27 @@ app.get('/getOrder/:idUser', function (req, res) {
   });
 });
 
+app.get('/getOrderByID/:idOrder', function (req, res) {
+  Order.find({
+    "_id": req.params.idOrder
+  }, function (err, orderProducts) {
+    if (err) {
+      res.json({
+        success: 0,
+        message: "Could not get data from mlab"
+      });
+    } else {
+      res.send({
+        Orders: orderProducts
+      });
+    }
+  });
+});
+
 //Update Order
-app.put('/updateOrder/:email', function (req, res) {
+app.put('/updateOrder/:idOrder', function (req, res) {
   Order.findOne({
-    'email': req.params.email
+    '_id': req.params.idOrder
   }, function (err, order) {
     // Handle any possible database errors
     if (err) {
