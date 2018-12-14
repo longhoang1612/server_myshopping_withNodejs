@@ -118,7 +118,6 @@ app.post('/login',function(request,response,next){
   RegisterUser.find({'email':email}).count(function(err,number){
     if(number==0){
       response.json('Email not exists')
-      console.log('Email not exists')
     }else{
       RegisterUser.findOne({'email':email},function(err,user){
         var salt = user.salt;
@@ -596,6 +595,32 @@ app.put('/updateAddressUser/:email', function (req, res) {
     } else {
     
       user.address = req.body.address || user.address;
+
+      // Save the updated document back to the database
+      user.save(function (err, user) {
+        if (err) {
+          res.status(500).send(err)
+        } else {
+          res.send(user);
+        }
+      });
+    }
+  });
+});
+
+//Update Info User
+app.put('/updateInfo/:email', function (req, res) {
+  RegisterUser.findOne({
+    'email': req.params.email
+  }, function (err, user) {
+    if (err) {
+      res.status(500).send(err);
+    } else {
+      
+      user.fullName = req.body.fullName || user.fullName;
+      user.address = req.body.address || user.address;
+      user.birthday = req.body.birthday || user.birthday;
+      user.sex = req.body.sex || user.sex; 
 
       // Save the updated document back to the database
       user.save(function (err, user) {
