@@ -30,7 +30,15 @@ var phoneProduct = new Schema({
         image:String
     }],
     listCongDung:[String],
-    slider:[String]
+    slider:[String],
+    comment:[{
+        date:String,
+        nameUser:String,
+        imageComment:String,
+        titleComment:String,
+        comment:String,
+        rating:Number
+    }]
   }
 );
 var phoneModel = mongoose.model("PhoneProduct", phoneProduct);

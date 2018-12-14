@@ -13,6 +13,7 @@ var TabletProduct = require('./models/TabletProduct')
 var NewsFeed = require('./models/NewsFeed')
 var Order = require('./models/Order')
 var RegisterUser = require('./models/RegisterUser')
+var Comment = require('./models/Comment')
 
 //LOGIN
 var ObjectID = mongoose.ObjectID
@@ -358,6 +359,60 @@ app.post('/createProduct', function (req, res) {
       });
     } else {
       res.json(createProduct);
+    }
+  });
+});
+
+//Create Comment
+app.post('/createComment', function (req, res) {
+  var body = req.body;
+
+  var date = body.date;
+  var idProduct = body.idProduct;
+  var nameProduct = body.nameProduct;
+  var nameUser = body.nameUser;
+  var imageComment = body.imageComment;
+  var titleComment = body.titleComment;
+  var comment = body.comment;
+  var rating = body.rating;
+
+  var commentProduct = new Comment({
+    date:date,
+    idProduct: idProduct,
+    nameProduct: nameProduct,
+    nameUser:nameUser,
+    imageComment:imageComment,
+    titleComment: titleComment,
+    comment : comment,
+    rating: rating,
+  });
+
+
+  commentProduct.save(function (err, createComment) {
+    if (err) {
+      res.json({
+        "success": 0,
+        "message": "Could not add record: " + err
+      });
+    } else {
+      res.json(createComment);
+    }
+  });
+});
+
+app.get('/getComment/:idProduct', function (req, res) {
+  Comment.find({
+    "idProduct": req.params.idProduct
+  }, function (err, createComment) {
+    if (err) {
+      res.json({
+        success: 0,
+        message: "Could not get data from mlab"
+      });
+    } else {
+      res.send({
+        Comment: createComment
+      });
     }
   });
 });
