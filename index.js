@@ -54,7 +54,7 @@ mongoose.connect('mongodb://hoanglong96:hoanglong96@ds111618.mlab.com:11618/hoan
 
 //Set port 
 var app = express();
-app.set('port', (process.env.PORT || 040516));
+app.set('port', (process.env.PORT || 8888));
 app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
@@ -729,8 +729,8 @@ app.put('/cartUpload/:email', function (req, res) {
 
 //Search
 app.post('/searchItems', function (req, res) {
-  var body = req.params;
-  var keySearchFormat = Diacritics.clean(body.keySearch);
+  var body = req.body;
+  var keySearchFormat = body.keySearch;
   PhoneProduct.find(function (err, foods) {
     if (err) {
       res.json({
@@ -738,15 +738,16 @@ app.post('/searchItems', function (req, res) {
         message: "Could not get data from mlab"
       });
     } else {
-      var foodsReturn = [];
-      foods.forEach(function (value) {
-        var nameFormat = Diacritics.clean(value.name);
-        if (nameFormat.indexOf(keySearchFormat) > -1) {
-          foodsReturn.push(value);
+      var productReturn = [];
+      foods.filter(function (value) {
+        var nameFormat = value.title;
+        if (nameFormat.indexOf(keySearchFormat) !== -1) {
+          productReturn.push(value);
+          console.log(nameFormat)
         }
       });
       res.json({
-        PhoneProduct: foodsReturn
+        PhoneProduct: productReturn
       });
     }
   });
