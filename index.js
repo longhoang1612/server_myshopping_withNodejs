@@ -730,7 +730,8 @@ app.put('/cartUpload/:email', function (req, res) {
 //Search
 app.post('/searchItems', function (req, res) {
   var body = req.body;
-  var keySearchFormat = body.keySearch;
+  var keySearchFormat = body.keySearch.toLowerCase();
+
   PhoneProduct.find(function (err, foods) {
     if (err) {
       res.json({
@@ -740,10 +741,9 @@ app.post('/searchItems', function (req, res) {
     } else {
       var productReturn = [];
       foods.filter(function (value) {
-        var nameFormat = value.title;
+        var nameFormat = value.title.toLowerCase();
         if (nameFormat.indexOf(keySearchFormat) !== -1) {
           productReturn.push(value);
-          console.log(nameFormat)
         }
       });
       res.json({
