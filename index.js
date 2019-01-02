@@ -6,10 +6,8 @@ var request = require('request');
 var cheerio = require('cheerio');
 
 //import model
-var UserInfo = require('./models/userInfo');
 var PhoneCategory = require('./models/PhoneCategory')
 var PhoneProduct = require('./models/PhoneProduct')
-var TabletProduct = require('./models/TabletProduct')
 var NewsFeed = require('./models/NewsFeed')
 var Order = require('./models/Order')
 var RegisterUser = require('./models/RegisterUser')
@@ -242,21 +240,6 @@ app.get('/getPhoneProduct/', function (req, res) {
     } else {
       res.send({
         PhoneProduct: phoneProduct
-      });
-    }
-  });
-})
-
-app.get('/getTabletProduct/', function (req, res) {
-  TabletProduct.find(function (err, tabletProduct) {
-    if (err) {
-      res.json({
-        success: 0,
-        message: "Could not get data from mlab"
-      });
-    } else {
-      res.send({
-        TabletProduct: tabletProduct
       });
     }
   });
@@ -571,70 +554,6 @@ app.put('/updateFavorites/:email', function (req, res) {
           res.send(user);
         }
       });
-    }
-  });
-});
-
-//Create User
-app.post('/create_user', function (req, res) {
-  var body = req.body;
-
-  UserInfo.findOne({
-    'userName': body.userName
-  }, function (err, user) {
-    if (err) {
-      res.json({
-        "success": 0,
-        "message": "Could not add record: " + err
-      });
-    } else {
-      if (user) {
-        res.json({
-          "success": 201,
-          "message": "Trung username: " + err
-        });
-      } else {
-        var imageAvatar = body.imageAvatar;
-        var fullName = body.fullName;
-        var userName = body.userName;
-        var email = body.email;
-        var password = body.password;
-        var sex = body.sex;
-
-        var today = new Date();
-        var dd = today.getDate();
-        var mm = today.getMonth() + 1; //January is 0!
-        var yyyy = today.getFullYear();
-
-        if (dd < 10) {
-          dd = '0' + dd
-        }
-
-        if (mm < 10) {
-          mm = '0' + mm
-        }
-
-        var user = new UserInfo({
-          // id:idValue,
-          imageAvatar: imageAvatar,
-          fullName: fullName,
-          userName: userName,
-          email: email,
-          password: password,
-          date: dd + '/' + mm + '/' + yyyy,
-          sex: sex,
-        });
-        user.save(function (err, createdUser) {
-          if (err) {
-            res.json({
-              "success": 0,
-              "message": "Could not add record: " + err
-            });
-          } else {
-            res.json(createdUser);
-          }
-        });
-      }
     }
   });
 });
