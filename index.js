@@ -692,11 +692,11 @@ app.get('/getTopFood', function (req, res) {
 });
 
 //Delete Product with ID
-app.delete('/deleteProduct/:idProduct', function (req, res) {
+app.get('/deleteProduct/:idProduct', function (req, res) {
   var productID = req.params.idProduct;
 
   PhoneProduct.findByIdAndRemove(productID, function (error, product) {
-    if (err) {
+    if (error) {
       res.json({
         "success": 0,
         "message": "Could not delete data from mlab"
@@ -711,11 +711,11 @@ app.delete('/deleteProduct/:idProduct', function (req, res) {
 });
 
 //Delete Comment with ID
-app.delete('/deleteComment/:idProduct', function (req, res) {
+app.get('/deleteComment/:idComment', function (req, res) {
   var commentId = req.params.idProduct;
 
   Comment.findByIdAndRemove({
-    'idProduct':req.params.idProduct}, function (error, comment) {
+    '_id': req.params.idComment}, function (error, comment) {
     if (err) {
       res.json({
         "success": 0,
